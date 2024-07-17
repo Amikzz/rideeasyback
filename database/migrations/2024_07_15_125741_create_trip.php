@@ -18,12 +18,11 @@ return new class extends Migration
             $table->time('departure_time');
             $table->time('arrival_time');
             $table->string('status');
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('bus_with_driver_conductor_id')->references('bus_with_driver_conductor')->on('busdriverconductor')->onDelete('cascade');
             $table->foreign('schedule_id')->references('schedule_id')->on('schedule')->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 

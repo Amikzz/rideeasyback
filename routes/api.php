@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/view-bus-schedule', [UserController::class, 'viewBusSchedule'])->name('view-bus-schedule');
+Route::get('/location-get', [UserController::class, 'locationget'])->name('locationget');

@@ -15,8 +15,10 @@ return new class extends Migration
             $table->string('bus_license_plate_no')->primary();
             $table->integer('capacity');
             $table->string('status');
-            $table->string('lastUpdateLocation');
             $table->timestamps();
+            $table->decimal('latitude');
+            $table->decimal('longitude');
+            $table->dateTime('lastUpdateLocation');
         });
     }
 

@@ -15,10 +15,10 @@ return new class extends Migration
             $table->string('schedule_id')->primary();
             $table->string('route_id');
             $table->date('date');
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('route_id')->references('route_id')->on('route')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

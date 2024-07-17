@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bus;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,5 +52,55 @@ class UserController extends Controller
         $trips = $query->get();
 
         return response()->json($trips);
+    }
+
+    public function liveLocationTracking(Request $request): JsonResponse
+    {
+        $request->validate([
+            'bus_license' => 'required|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        $busLicensePlate = $request->bus_license;
+        $latitude = $request->latitude;
+        $longitude = $request->longitude;
+
+        // Attempt to update directly without retrieving first
+        $affectedRows = DB::table('bus')
+            ->where('bus_license_plate_no', $busLicensePlate)
+            ->update([
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'lastUpdateLocation' => now()
+            ]);
+
+        if ($affectedRows > 0) {
+            return response()->json(['status' => 'Location updated successfully']);
+        } else {
+            return response()->json(['error' => 'Bus not found.'], 404);
+        }
+    }
+
+    public function locationget(Request $request): JsonResponse
+    {
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        $status = $request->status;
+
+        // Retrieve all buses with the specified status using the DB facade
+        $buses = DB::table('bus')
+            ->select('bus_license_plate_no', 'latitude', 'longitude', 'lastUpdateLocation')
+            ->where('status', $status)
+            ->get();
+
+        if ($buses->isEmpty()) {
+            return response()->json(['error' => 'No buses found.'], 404);
+        }
+
+        // Return the bus locations as JSON
+        return response()->json($buses);
     }
 }

@@ -17,12 +17,12 @@ return new class extends Migration
             $table->string('bus_license_plate_no');
             $table->string('driver_id');
             $table->string('conductor_id');
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('bus_license_plate_no')->references('bus_license_plate_no')->on('bus')->onDelete('cascade');
             $table->foreign('driver_id')->references('driver_id')->on('driver')->onDelete('cascade');
             $table->foreign('conductor_id')->references('conductor_admin_id')->on('users')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

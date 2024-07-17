@@ -22,5 +22,5 @@ Route::middleware([
     Route::post('/dashboard/viewtrips', [App\Http\Controllers\ConductorController::class, 'viewTrips'])->name('viewtrips.post');
     Route::get('/dashboard/deleteride', [App\Http\Controllers\ConductorController::class, 'showDeleteRideForm'])->name('deleteride');
     Route::post('/dashboard/deleteride', [App\Http\Controllers\ConductorController::class, 'deleteRide'])->name('deleteride.post');
-
+    Route::post('/update-location', [App\Http\Controllers\UserController::class, 'liveLocationTracking'])->name('updatelocation.post');
 });

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('busseat', function (Blueprint $table) {
             $table->string('seat_number')->primary();
             $table->string('bus_license_plate_no');
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('bus_license_plate_no')->references('bus_license_plate_no')->on('bus')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

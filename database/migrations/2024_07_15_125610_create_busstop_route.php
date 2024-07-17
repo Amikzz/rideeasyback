@@ -15,11 +15,11 @@ return new class extends Migration
             $table->string('bus_stop_id');
             $table->string('route_id');
             $table->primary(['bus_stop_id', 'route_id']);
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('bus_stop_id')->references('bus_stop_id')->on('busstop')->onDelete('cascade');
             $table->foreign('route_id')->references('route_id')->on('route')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 
