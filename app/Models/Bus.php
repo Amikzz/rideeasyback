@@ -9,6 +9,7 @@ class Bus extends Model
 {
     use HasFactory;
 
+    protected $table = 'bus'; // Assuming 'bus' is the table name
     protected $primaryKey = 'bus_license_plate_no'; // Assuming 'bus_license_plate_no' is your primary key
 
     protected $fillable = [

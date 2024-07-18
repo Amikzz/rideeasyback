@@ -17,6 +17,7 @@
                         You're logged in! You can now view your rides, add new rides, and view your profile.
                     </div>
                 </div>
+
                 <!-- Add the buttons here -->
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -51,80 +52,100 @@
     </div>
 
     <script>
-            document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('bus-form');
             const busLicenseForm = document.getElementById('bus-license-form');
 
             // Check if the form has been submitted before and start location updates
             if (localStorage.getItem('formSubmitted')) {
-            form.style.display = 'none';
-            const busLicense = localStorage.getItem('busLicense');
-            startLocationUpdates(busLicense);
-        }
+                form.style.display = 'none';
+                const busLicense = localStorage.getItem('busLicense');
+                startLocationUpdates(busLicense);
+            }
 
             busLicenseForm.addEventListener('submit', function(event) {
-            event.preventDefault();
+                event.preventDefault();
 
-            const busLicense = document.getElementById('bus_license').value;
+                const busLicense = document.getElementById('bus_license').value;
 
-            if (!busLicense) {
-            alert('Please enter the bus license plate number.');
-            return;
-        }
+                if (!busLicense) {
+                    alert('Please enter the bus license plate number.');
+                    return;
+                }
 
-            form.style.display = 'none';
-            localStorage.setItem('formSubmitted', 'true');
-            localStorage.setItem('busLicense', busLicense);
+                form.style.display = 'none';
+                localStorage.setItem('formSubmitted', 'true');
+                localStorage.setItem('busLicense', busLicense);
 
-            startLocationUpdates(busLicense);
-        });
+                startLocationUpdates(busLicense);
+            });
 
             function startLocationUpdates(busLicense) {
-            function getLocation() {
-            if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(sendLocation);
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-        }
-        }
+                function getLocation() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(sendLocation, handleError, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        });
+                    } else {
+                        console.log("Geolocation is not supported by this browser.");
+                    }
+                }
 
-            function sendLocation(position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
+                function sendLocation(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
 
-            fetch('{{ route('updatelocation.post') }}', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-            body: JSON.stringify({
-            latitude: lat,
-            longitude: lng,
-            bus_license: busLicense
-        })
-        })
-            .then(response => {
-            if (!response.ok) {
-            return response.text().then(text => { throw new Error(text) });
-        }
-            return response.json();
-        })
-            .then(data => {
-            console.log('Location updated:', data);
-        })
-            .catch(error => {
-            console.error('Error updating location:', error);
+                    fetch('{{ route('updatelocation.post') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            latitude: lat,
+                            longitude: lng,
+                            bus_license: busLicense
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.text().then(text => { throw new Error(text) });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Location updated:', data);
+                        })
+                        .catch(error => {
+                            console.error('Error updating location:', error);
+                        });
+                }
+
+                function handleError(error) {
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("User denied the request for Geolocation.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("Location information is unavailable.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("The request to get user location timed out.");
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            alert("An unknown error occurred.");
+                            break;
+                    }
+                }
+
+                // Update location every 10 seconds
+                setInterval(getLocation, 10000);
+
+                // Get initial location
+                getLocation();
+            }
         });
-        }
-
-            // Update location every 10 seconds
-            setInterval(getLocation, 10000);
-
-            // Get initial location
-            getLocation();
-        }
-        });
-
     </script>
 </x-app-layout>

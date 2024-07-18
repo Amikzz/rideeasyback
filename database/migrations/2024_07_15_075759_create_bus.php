@@ -16,8 +16,8 @@ return new class extends Migration
             $table->integer('capacity');
             $table->string('status');
             $table->timestamps();
-            $table->decimal('latitude');
-            $table->decimal('longitude');
+            $table->decimal('latitude')->nullable();
+            $table->decimal('longitude')->nullable();
             $table->dateTime('lastUpdateLocation');
         });
     }

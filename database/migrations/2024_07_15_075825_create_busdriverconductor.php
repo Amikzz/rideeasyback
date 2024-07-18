@@ -23,6 +23,11 @@ return new class extends Migration
             $table->foreign('bus_license_plate_no')->references('bus_license_plate_no')->on('bus')->onDelete('cascade');
             $table->foreign('driver_id')->references('driver_id')->on('driver')->onDelete('cascade');
             $table->foreign('conductor_id')->references('conductor_admin_id')->on('users')->onDelete('cascade');
+
+            // Ensure that the referenced columns are indexed
+            $table->index('bus_license_plate_no');
+            $table->index('driver_id');
+            $table->index('conductor_id');
         });
     }
 
