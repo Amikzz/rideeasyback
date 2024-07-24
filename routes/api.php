@@ -10,3 +10,5 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/view-bus-schedule', [UserController::class, 'viewBusSchedule'])->name('view-bus-schedule');
 Route::get('/location-get', [UserController::class, 'locationget'])->name('locationget');
+Route::post('/review-post', [UserController::class, 'reviewStore'])->name('review.post');
+Route::post('/support-post', [UserController::class, 'supportRequest'])->name('support.get');

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
+use App\Models\ReviewModel;
+use App\Models\SupportModel;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -102,5 +104,68 @@ class UserController extends Controller
 
         // Return the bus locations as JSON
         return response()->json($buses);
+    }
+
+    public function reviewStore(Request $request): JsonResponse
+    {
+        // Validate the request data
+        $request->validate([
+            'user_id' => 'required|string',
+            'bus_license' => 'required|string',
+            'review' => 'required|string',
+        ]);
+
+        // Extract the validated data
+        $user_id = $request->user_id;
+        $busLicensePlate = $request->bus_license;
+        $review = $request->review;
+
+        // Check if the bus exists
+        $busExists = DB::table('bus')
+            ->where('bus_license_plate_no', $busLicensePlate)
+            ->exists();
+
+        // If the bus does not exist, return an error response
+        if (!$busExists) {
+            return response()->json(['error' => 'Bus not found.'], 404);
+        }
+
+        // Create the review if the bus exists
+        ReviewModel::create([
+            'user_id' => $user_id,
+            'bus_license_plate_no' => $busLicensePlate,
+            'review' => $review,
+        ]);
+
+        // Return a success response
+        return response()->json(['status' => 'Review updated successfully']);
+    }
+
+    public function supportRequest(Request $request): JsonResponse
+    {
+        $request->validate(
+            [
+                'name' => 'required|string',
+                'email' => 'required|email',
+                'phone' => 'required|string',
+                'issue' => 'required|string',
+            ]
+        );
+
+        $name = $request->name;
+        $email = $request->email;
+        $phone = $request->phone;
+        $issue = $request->issue;
+
+        SupportModel::create(
+            [
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'issue' => $issue,
+                'status' => 'pending',
+            ]
+        );
+        return response()->json(['status' => 'Support request submitted successfully']);
     }
 }
