@@ -18,5 +18,6 @@ class Trip extends Model
         'departure_time',
         'arrival_time',
         'status',
+        'process'
     ];
 }

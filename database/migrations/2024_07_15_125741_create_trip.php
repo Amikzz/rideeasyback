@@ -18,6 +18,7 @@ return new class extends Migration
             $table->time('departure_time');
             $table->time('arrival_time');
             $table->string('status');
+            $table->string('process');
             $table->timestamps();
 
             // Foreign key constraint

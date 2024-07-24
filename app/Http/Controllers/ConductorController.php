@@ -74,13 +74,14 @@ class ConductorController extends Controller
 
             // Determine status based on whether trip number is even or odd
             if ($tripInt % 2 == 0) {
-                $trip->status = 'up'; // Even number
+                $trip->status = 'Up'; // Even number
             } else {
-                $trip->status = 'down'; // Odd number
+                $trip->status = 'Down'; // Odd number
             }
 
             $trip->departure_time = $startTime->format('Y-m-d H:i:s');
             $trip->arrival_time = $startTime->addMinutes($intervalMinutes)->format('Y-m-d H:i:s');
+            $trip->process = 'Pending';
             $trip->save();
         }
     }
@@ -101,6 +102,46 @@ class ConductorController extends Controller
         $trips = $query->get();
 
         return view('viewtrips', compact('trips', 'busLicensePlateNo'));
+    }
+
+    public function startTrip(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate(
+            [
+                'trip_id' => 'required|exists:trip,trip_id',
+            ]
+        );
+
+        // Update the trip status to 'In Progress'
+        DB::table('trip')
+            ->where('trip_id', $request->trip_id)
+            ->update(['process' => 'In Progress']);
+
+        // Start a new thread to wait for 2 hours and then update the status to 'done'
+        $this->updateTripStatusToDoneAfterDelay($request->trip_id);
+
+        return redirect()->route('viewtrips')->with('success', 'Trip started and will be marked as done in 2 hours.');
+    }
+
+    private function updateTripStatusToDoneAfterDelay($tripId): void
+    {
+        ignore_user_abort(true);
+        set_time_limit(0);
+
+        // Use a closure to create a separate thread
+        $closure = function() use ($tripId) {
+            // Sleep for 2 hours (7200 seconds)
+            sleep(7200);
+
+            // Update the trip status to 'done'
+            DB::table('trip')
+                ->where('trip_id', $tripId)
+                ->update(['process' => 'done']);
+        };
+
+        // Run the closure in a separate thread
+        $thread = new \Thread($closure);
+        $thread->start();
     }
 
     public function showDeleteRideForm()

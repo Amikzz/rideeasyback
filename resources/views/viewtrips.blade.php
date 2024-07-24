@@ -40,6 +40,8 @@
                                     <th class="px-4 py-2">Departure Time</th>
                                     <th class="px-4 py-2">Arrival Time</th>
                                     <th class="px-4 py-2">Status</th>
+                                    <th class="px-4 py-2">Process</th>
+                                    <th class="px-4 py-2">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -49,7 +51,34 @@
                                         <td class="border px-4 py-2">{{ $trip->trip_id }}</td>
                                         <td class="border px-4 py-2">{{ $trip->departure_time }}</td>
                                         <td class="border px-4 py-2">{{ $trip->arrival_time }}</td>
-                                        <td class="border px-4 py-2">{{ $trip->status }}</td>
+                                        <td class="border px-4 py-2">
+                                            @if($trip->status === 'Up')
+                                                <span class="text-red-500">{{ $trip->status }}</span>
+                                            @elseif($trip->status === 'Down')
+                                                <span class="text-green-500">{{ $trip->status }}</span>
+                                            @else
+                                                <span class="text-yellow-500">{{ $trip->status }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            @if($trip->process === 'Pending')
+                                                <span class="text-blue-500">{{ $trip->process }}</span>
+                                            @elseif($trip->process === 'Ongoing')
+                                                <span class="text-green-500">{{ $trip->process }}</span>
+                                            @elseif($trip->process === 'Done')
+                                                <span class="text-red-500">{{ $trip->process }}</span>
+                                            @else
+                                                <span>{{ $trip->process }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <form method="POST" action="{{ route('starttrip.post', $trip->trip_id) }}">
+                                                @csrf
+                                                <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                    {{ __('Start') }}
+                                                </x-button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -63,7 +92,33 @@
                                     <p class="text-gray-700"><strong>Trip ID:</strong> {{ $trip->trip_id }}</p>
                                     <p class="text-gray-700"><strong>Departure Time:</strong> {{ $trip->departure_time }}</p>
                                     <p class="text-gray-700"><strong>Arrival Time:</strong> {{ $trip->arrival_time }}</p>
-                                    <p class="text-gray-700"><strong>Status:</strong> {{ $trip->status }}</p>
+                                    <p class="text-gray-700"><strong>Status:</strong>
+                                        @if($trip->status === 'Up')
+                                            <span class="text-red-500">{{ $trip->status }}</span>
+                                        @elseif($trip->status === 'Down')
+                                            <span class="text-yellow-600">{{ $trip->status }}</span>
+                                        @else
+                                            <span>{{ $trip->status }}</span>
+                                        @endif
+                                    </p>
+                                    <p class="text-gray-700"><strong>Process:</strong>
+                                        @if($trip->process === 'Pending')
+                                            <span class="text-blue-500">{{ $trip->process }}</span>
+                                        @elseif($trip->process === 'Ongoing')
+                                            <span class="text-green-500">{{ $trip->process }}</span>
+                                        @elseif($trip->process === 'Done')
+                                            <span class="text-red-500">{{ $trip->process }}</span>
+                                        @else
+                                            <span>{{ $trip->process }}</span>
+                                        @endif
+                                    </p>
+                                    <br>
+                                    <form method="POST" action="{{ route('starttrip.post', $trip->trip_id) }}">
+                                        @csrf
+                                        <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                            {{ __('Start') }}
+                                        </x-button>
+                                    </form>
                                 </div>
                             @endforeach
                         </div>

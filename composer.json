@@ -13,7 +13,8 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
         "pusher/pusher-php-server": "^7.2",
-        "spatie/laravel-permission": "^6.9"
+        "spatie/laravel-permission": "^6.9",
+        "ext-pthreads": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
