@@ -6,9 +6,11 @@ use App\Models\BusDriverConductor;
 use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Thread;
 
 class ConductorController extends Controller
 {
@@ -104,47 +106,38 @@ class ConductorController extends Controller
         return view('viewtrips', compact('trips', 'busLicensePlateNo'));
     }
 
-    public function startTrip(Request $request): \Illuminate\Http\RedirectResponse
+    public function startTrip(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
     {
-        $request->validate(
-            [
-                'trip_id' => 'required|exists:trip,trip_id',
-            ]
-        );
-
-        // Update the trip status to 'In Progress'
-        DB::table('trip')
-            ->where('trip_id', $request->trip_id)
-            ->update(['process' => 'In Progress']);
-
-        // Start a new thread to wait for 2 hours and then update the status to 'done'
-        $this->updateTripStatusToDoneAfterDelay($request->trip_id);
-
-        return redirect()->route('viewtrips')->with('success', 'Trip started and will be marked as done in 2 hours.');
-    }
-
-    private function updateTripStatusToDoneAfterDelay($tripId): void
-    {
-        ignore_user_abort(true);
-        set_time_limit(0);
-
-        // Use a closure to create a separate thread
-        $closure = function() use ($tripId) {
-            // Sleep for 2 hours (7200 seconds)
-            sleep(7200);
-
-            // Update the trip status to 'done'
+        try {
+            // Update the trip status to 'In Progress'
             DB::table('trip')
-                ->where('trip_id', $tripId)
-                ->update(['process' => 'done']);
-        };
+                ->where('trip_id', $trip_id)
+                ->update(['process' => 'In Progress']);
 
-        // Run the closure in a separate thread
-        $thread = new \Thread($closure);
-        $thread->start();
+            return redirect()->route('viewtrips')->with('success', 'Trip started and will be marked as done in 2 hours.');
+        } catch (\Exception $e) {
+            Log::error('Error starting trip: ' . $e->getMessage());
+            return redirect()->route('viewtrips')->with('error', 'Failed to start the trip.');
+        }
     }
 
-    public function showDeleteRideForm()
+    public function endTrip(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
+    {
+        try {
+            // Update the trip status to 'Done'
+            DB::table('trip')
+                ->where('trip_id', $trip_id)
+                ->update(['process' => 'Done']);
+
+            return redirect()->route('viewtrips')->with('success', 'Trip marked as done successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error ending trip: ' . $e->getMessage());
+            return redirect()->route('viewtrips')->with('error', 'Failed to end the trip.');
+        }
+    }
+
+
+    public function showDeleteRideForm(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
     {
         // Get today's date
         $today = Carbon::today()->format('Y-m-d');
@@ -162,7 +155,7 @@ class ConductorController extends Controller
         return view('deleteride', compact('departureTimes'));
     }
 
-    public function deleteRide(Request $request)
+    public function deleteRide(Request $request): \Illuminate\Http\RedirectResponse
     {
         // Validate the request
         $request->validate([
