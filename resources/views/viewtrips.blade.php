@@ -73,12 +73,21 @@
                                         </td>
                                         <td class="border px-4 py-2">
                                             @if($trip->process === 'Pending')
-                                                <form method="POST" action="{{ route('starttrip.post', $trip->trip_id) }}">
-                                                    @csrf
-                                                    <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        {{ __('Start') }}
-                                                    </x-button>
-                                                </form>
+                                                <div class="flex space-x-2">
+                                                    <form method="POST" action="{{ route('starttrip.post', $trip->trip_id) }}">
+                                                        @csrf
+                                                        <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                            {{ __('Start') }}
+                                                        </x-button>
+                                                    </form>
+                                                    <form method="POST" action="{{ route('deleteride.post', $trip->trip_id) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <x-button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                            {{ __('Delete') }}
+                                                        </x-button>
+                                                    </form>
+                                                </div>
                                             @elseif($trip->process === 'In Progress')
                                                 <form method="POST" action="{{ route('endtrip.post', $trip->trip_id) }}">
                                                     @csrf
@@ -123,12 +132,21 @@
                                     </p>
                                     <br>
                                     @if ($trip->process === 'Pending')
-                                        <form method="POST" action="{{ route('starttrip.post', $trip->trip_id) }}">
-                                            @csrf
-                                            <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                {{ __('Start') }}
-                                            </x-button>
-                                        </form>
+                                        <div class="flex space-x-2">
+                                            <form method="POST" action="{{ route('starttrip.post', $trip->trip_id) }}">
+                                                @csrf
+                                                <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                    {{ __('Start') }}
+                                                </x-button>
+                                            </form>
+                                            <form method="POST" action="{{ route('deleteride.post', $trip->trip_id) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                    {{ __('Delete') }}
+                                                </x-button>
+                                            </form>
+                                        </div>
                                     @elseif($trip->process === 'In Progress')
                                         <form method="POST" action="{{ route('endtrip.post', $trip->trip_id) }}">
                                             @csrf

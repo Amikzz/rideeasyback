@@ -155,15 +155,10 @@ class ConductorController extends Controller
         return view('deleteride', compact('departureTimes'));
     }
 
-    public function deleteRide(Request $request): \Illuminate\Http\RedirectResponse
+    public function deleteRide(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
     {
-        // Validate the request
-        $request->validate([
-            'trip_id' => 'required|exists:trip,trip_id'
-        ]);
-
         // Delete the selected trip
-        DB::table('trip')->where('trip_id', $request->trip_id)->delete();
+        DB::table('trip')->where('trip_id', $trip_id)->delete();
 
         return redirect()->route('deleteride')->with('success', 'Ride deleted successfully');
     }
