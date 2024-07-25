@@ -95,7 +95,8 @@ class ConductorController extends Controller
         // Join the tables and select the desired columns
         $query = DB::table('trip')
             ->join('busdriverconductor', 'trip.bus_with_driver_conductor_id', '=', 'busdriverconductor.bus_with_driver_conductor')
-            ->select('trip.*', 'busdriverconductor.bus_license_plate_no');
+            ->join('schedule', 'trip.schedule_id', '=', 'schedule.schedule_id')
+            ->select('trip.*', 'busdriverconductor.bus_license_plate_no', 'schedule.date');
 
         if ($busLicensePlateNo) {
             $query->where('busdriverconductor.bus_license_plate_no', $busLicensePlateNo);
