@@ -114,7 +114,7 @@ class ConductorController extends Controller
                 ->where('trip_id', $trip_id)
                 ->update(['process' => 'In Progress']);
 
-            return redirect()->route('viewtrips')->with('success', 'Trip started and will be marked as done in 2 hours.');
+            return redirect()->route('viewtrips')->with('success', 'Trip started! Remember to End the trip once you reach the destination.');
         } catch (\Exception $e) {
             Log::error('Error starting trip: ' . $e->getMessage());
             return redirect()->route('viewtrips')->with('error', 'Failed to start the trip.');
@@ -129,7 +129,7 @@ class ConductorController extends Controller
                 ->where('trip_id', $trip_id)
                 ->update(['process' => 'Done']);
 
-            return redirect()->route('viewtrips')->with('success', 'Trip marked as done successfully.');
+            return redirect()->route('viewtrips')->with('success', 'Trip Ended Successfully.');
         } catch (\Exception $e) {
             Log::error('Error ending trip: ' . $e->getMessage());
             return redirect()->route('viewtrips')->with('error', 'Failed to end the trip.');
@@ -157,10 +157,16 @@ class ConductorController extends Controller
 
     public function deleteRide(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
     {
-        // Delete the selected trip
-        DB::table('trip')->where('trip_id', $trip_id)->delete();
+        try {
 
-        return redirect()->route('deleteride')->with('success', 'Ride deleted successfully');
+            DB::table('trip')->where('trip_id', $trip_id)->delete();
+
+            return redirect()->route('viewtrips')->with('success', 'Ride deleted successfully');
+        }
+        catch (\Exception $e) {
+            Log::error('Error deleting ride: ' . $e->getMessage());
+            return redirect()->route('viewtrips')->with('error', 'Failed to delete the ride.');
+        }
     }
 
 }

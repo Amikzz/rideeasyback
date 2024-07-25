@@ -30,8 +30,8 @@
                         <a href="" class="block text-center bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             Tickets
                         </a>
-                        <a href="{{ route('deleteride') }}" class="block text-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
-                            Cancel Rides
+                        <a href="" class="block text-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            Support
                         </a>
                     </div>
                 </div>
