@@ -25,4 +25,6 @@ Route::middleware([
     Route::post('/update-location', [App\Http\Controllers\UserController::class, 'liveLocationTracking'])->name('updatelocation.post');
     Route::post('/dashboard/viewtrips/{trip_id}', [App\Http\Controllers\ConductorController::class, 'startTrip'])->name('starttrip.post');
     Route::post('/dashboard/viewtrips/{trip_id}/end', [App\Http\Controllers\ConductorController::class, 'endTrip'])->name('endtrip.post');
+    Route::get('/dashboard/support', [App\Http\Controllers\ConductorController::class, 'showSupportForm'])->name('support');
+    Route::post('/dashboard/support', [App\Http\Controllers\ConductorController::class, 'conductorSupportController'])->name('support.post');
 });

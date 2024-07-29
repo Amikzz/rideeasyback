@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BusDriverConductor;
+use App\Models\ConductorSupportModel;
 use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -170,4 +171,34 @@ class ConductorController extends Controller
         }
     }
 
+    public function showSupportForm(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application{
+        return view('supportforconductors');
+    }
+
+    public function conductorSupportController(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        try {
+            $input = $request->all();
+
+            // Validate input fields
+            Validator::make($input, [
+                'conductor_name' => ['required', 'string', 'max:255'],
+                'conductor_id' => ['required', 'string', 'max:255'],
+                'request' => ['required', 'string', 'max:255'],
+            ])->validate();
+
+            // Create a new support ticket
+            ConductorSupportModel::create([
+                'conductor_name' => $input['conductor_name'],
+                'conductor_id' => $input['conductor_id'],
+                'request' => $input['request'],
+                'status' => 'Pending',
+            ]);
+
+            return redirect()->route('support')->with('success', 'Support Request Submitted Successfully');
+        } catch (\Exception $e) {
+            Log::error('Error creating support ticket: ' . $e->getMessage());
+            return redirect()->route('support')->with('error', 'Failed to Submit the Support Request');
+        }
+    }
 }
