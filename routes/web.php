@@ -11,12 +11,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function (){
-        return view('dashboard');
-    })->name('dashboard');
-    Route::get('/dashboard/addride', function (){
-        return view('addride');
-    })->name('addride');
+    Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'adminDashboard'])->name('dashboard');
+    Route::get('/dashboard/addride', [App\Http\Controllers\ConductorController::class, 'showAddRideForm'])->name('addride');
     Route::post('/dashboard/addride', [App\Http\Controllers\ConductorController::class, 'busDriveConductorRegistration'])->name('addridepost');
     Route::get('/dashboard/viewtrips', [App\Http\Controllers\ConductorController::class, 'viewTrips'])->name('viewtrips');
     Route::post('/dashboard/viewtrips', [App\Http\Controllers\ConductorController::class, 'viewTrips'])->name('viewtrips.post');

@@ -15,6 +15,11 @@ use Thread;
 
 class ConductorController extends Controller
 {
+    public function showAddRideForm(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+    {
+        return view('addride');
+    }
+
     //Bus_driver_conductor registration
     public function busDriveConductorRegistration(Request $request)
     {
