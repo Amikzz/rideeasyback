@@ -33,4 +33,5 @@ Route::middleware([
     Route::post('/dashboard/addconductor', [App\Http\Controllers\AdminController::class, 'addConductor'])->name('addconductor.post');
     Route::get('/dashboard/adddriver', [App\Http\Controllers\AdminController::class, 'addDriverView'])->name('adddriver');
     Route::post('/dashboard/adddriver', [App\Http\Controllers\AdminController::class, 'addDriver'])->name('adddriver.post');
+    Route::post('/dashboard/addschedule', [App\Http\Controllers\AdminController::class, 'addSchedule'])->name('addschedule.post');
 });

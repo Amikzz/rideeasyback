@@ -13,5 +13,6 @@ class Schedule extends Model
     protected $fillable = [
         'schedule_id',
         'route_id',
+        'date'
     ];
 }

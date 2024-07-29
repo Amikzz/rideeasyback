@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Bus;
 use App\Models\Driver;
 use App\Models\Person;
+use App\Models\Route;
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -124,6 +126,27 @@ class AdminController extends Controller
             return redirect()->route('adddriver')->with('success', 'Driver added successfully');
         } catch (\Exception $e) {
             return redirect()->route('adddriver')->with('error', 'An error occurred while adding driver');
+        }
+    }
+
+    //add a new schedule
+    public function addSchedule()
+    {
+        try {
+            $routes = Route::all();
+
+            foreach ($routes as $route) {
+                $date = now()->format('Y-m-d');
+
+                Schedule::create([
+                    'schedule_id' => $date,
+                    'route_id' => $route->route_id,
+                    'date' => now(),
+                ]);
+            }
+            return redirect()->route('dashboard')->with('success', 'Schedule created successfully');
+        }catch (\Exception $e){
+            return redirect()->route('dashboard')->with('error', 'An error occurred while adding a new schedule');
         }
     }
 }
