@@ -14,6 +14,8 @@ class Bus extends Model
 
     protected $fillable = [
         'bus_license_plate_no',
+        'capacity',
+        'status',
         'latitude',
         'longitude',
         'lastUpdateLocation',
@@ -22,5 +24,4 @@ class Bus extends Model
     protected $casts = [
         'lastUpdateLocation' => 'datetime', // Assuming 'lastUpdateLocation' is a timestamp column
     ];
-
 }

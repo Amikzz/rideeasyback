@@ -12,6 +12,8 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'adminDashboard'])->name('dashboard');
+
+    //conductor
     Route::get('/dashboard/addride', [App\Http\Controllers\ConductorController::class, 'showAddRideForm'])->name('addride');
     Route::post('/dashboard/addride', [App\Http\Controllers\ConductorController::class, 'busDriveConductorRegistration'])->name('addridepost');
     Route::get('/dashboard/viewtrips', [App\Http\Controllers\ConductorController::class, 'viewTrips'])->name('viewtrips');
@@ -23,4 +25,12 @@ Route::middleware([
     Route::post('/dashboard/viewtrips/{trip_id}/end', [App\Http\Controllers\ConductorController::class, 'endTrip'])->name('endtrip.post');
     Route::get('/dashboard/support', [App\Http\Controllers\ConductorController::class, 'showSupportForm'])->name('support');
     Route::post('/dashboard/support', [App\Http\Controllers\ConductorController::class, 'conductorSupportController'])->name('support.post');
+
+    //admin
+    Route::get('/dashboard/addbus', [App\Http\Controllers\AdminController::class, 'addBusView'])->name('addbus');
+    Route::post('/dashboard/addbus', [App\Http\Controllers\AdminController::class, 'addBus'])->name('addbus.post');
+    Route::get('/dashboard/addconductor', [App\Http\Controllers\AdminController::class, 'addConductorView'])->name('addconductor');
+    Route::post('/dashboard/addconductor', [App\Http\Controllers\AdminController::class, 'addConductor'])->name('addconductor.post');
+    Route::get('/dashboard/adddriver', [App\Http\Controllers\AdminController::class, 'addDriverView'])->name('adddriver');
+    Route::post('/dashboard/adddriver', [App\Http\Controllers\AdminController::class, 'addDriver'])->name('adddriver.post');
 });
