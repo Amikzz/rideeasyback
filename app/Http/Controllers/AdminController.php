@@ -10,6 +10,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -43,7 +44,7 @@ class AdminController extends Controller
             $bus = Bus::create([
                 'bus_license_plate_no' => $request->bus_license_plate_no,
                 'capacity' => $request->capacity,
-                'status' => 'active',
+                'status' => 'Active',
                 'lastUpdateLocation' => now(),
             ]);
 
@@ -147,6 +148,55 @@ class AdminController extends Controller
             return redirect()->route('dashboard')->with('success', 'Schedule created successfully');
         }catch (\Exception $e){
             return redirect()->route('dashboard')->with('error', 'An error occurred while adding a new schedule');
+        }
+    }
+
+    //view all buses
+    public function viewBuses(Request $request)
+    {
+        try{
+            $busLicensePlateNo = $request->input('bus_license_plate_no');
+
+            $query = DB::table('bus')
+                ->select('bus.*');
+
+            if ($busLicensePlateNo) {
+                $query->where('bus.bus_license_plate_no', $busLicensePlateNo);
+            }
+
+            $buses = $query->get();
+
+            return view('admin.viewBuses', compact('buses', 'busLicensePlateNo'));
+        }catch (\Exception $e){
+            return redirect()->route('admin.viewBuses')->with('error', 'An error occurred while viewing buses');
+        }
+    }
+
+    //inactivate bus
+    public function inactivateBus($bus_license_plate_no)
+    {
+        try {
+            DB::table('bus')
+                ->where('bus_license_plate_no', $bus_license_plate_no)
+                ->update(['status' => 'Inactive']);
+
+            return redirect()->route('viewbuses')->with('success', 'Bus inactivated successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('viewbuses')->with('error', 'An error occurred while inactivating bus');
+        }
+    }
+
+    //activate bus
+    public function activateBus($bus_license_plate_no)
+    {
+        try {
+            DB::table('bus')
+                ->where('bus_license_plate_no', $bus_license_plate_no)
+                ->update(['status' => 'Active']);
+
+            return redirect()->route('viewbuses')->with('success', 'Bus activated successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('viewbuses')->with('error', 'An error occurred while activating bus');
         }
     }
 }

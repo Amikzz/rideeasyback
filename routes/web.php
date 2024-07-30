@@ -34,4 +34,8 @@ Route::middleware([
     Route::get('/dashboard/adddriver', [App\Http\Controllers\AdminController::class, 'addDriverView'])->name('adddriver');
     Route::post('/dashboard/adddriver', [App\Http\Controllers\AdminController::class, 'addDriver'])->name('adddriver.post');
     Route::post('/dashboard/addschedule', [App\Http\Controllers\AdminController::class, 'addSchedule'])->name('addschedule.post');
+    Route::get('/dashboard/viewbuses', [App\Http\Controllers\AdminController::class, 'viewBuses'])->name('viewbuses');
+    Route::post('/dashboard/viewbuses', [App\Http\Controllers\AdminController::class, 'viewBuses'])->name('viewbuses.post');
+    Route::post('/dashboard/viewbuses/{bus_id}/inactivate', [App\Http\Controllers\AdminController::class, 'inactivateBus'])->name('inactivatebus.post');
+    Route::post('/dashboard/viewbuses/{bus_id}/activate', [App\Http\Controllers\AdminController::class, 'activateBus'])->name('activatebus.post');
 });

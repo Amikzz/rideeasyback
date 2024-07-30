@@ -34,7 +34,7 @@
                                 Add Schedule
                             </button>
                         </form>
-                        <a href="" class="block text-center bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{route('viewbuses')}}" class="block text-center bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Buses
                         </a>
                         <a href="" class="block text-center bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">

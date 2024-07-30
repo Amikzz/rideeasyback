@@ -52,7 +52,7 @@
                                 <thead>
                                 <tr>
                                     <th class="px-4 py-2">Bus License Plate Number</th>
-{{--                                    <th class="px-4 py-2">Trip ID</th>--}}
+                                    {{--                                    <th class="px-4 py-2">Trip ID</th>--}}
                                     <th class="px-4 py-2">Date</th>
                                     <th class="px-4 py-2">Departure Time</th>
                                     <th class="px-4 py-2">Arrival Time</th>
@@ -65,7 +65,7 @@
                                 @foreach($trips as $trip)
                                     <tr>
                                         <td class="border px-4 py-2">{{ $trip->bus_license_plate_no }}</td>
-{{--                                        <td class="border px-4 py-2">{{ $trip->trip_id }}</td>--}}
+                                        {{--                                        <td class="border px-4 py-2">{{ $trip->trip_id }}</td>--}}
                                         <td class="border px-4 py-2">{{ $trip->date }}</td>
                                         <td class="border px-4 py-2">{{ $trip->departure_time }}</td>
                                         <td class="border px-4 py-2">{{ $trip->arrival_time }}</td>
