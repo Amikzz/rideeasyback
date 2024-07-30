@@ -38,4 +38,12 @@ Route::middleware([
     Route::post('/dashboard/viewbuses', [App\Http\Controllers\AdminController::class, 'viewBuses'])->name('viewbuses.post');
     Route::post('/dashboard/viewbuses/{bus_id}/inactivate', [App\Http\Controllers\AdminController::class, 'inactivateBus'])->name('inactivatebus.post');
     Route::post('/dashboard/viewbuses/{bus_id}/activate', [App\Http\Controllers\AdminController::class, 'activateBus'])->name('activatebus.post');
+    Route::get('/dashboard/viewconductors', [App\Http\Controllers\AdminController::class, 'viewConductors'])->name('viewconductors');
+    Route::post('/dashboard/viewconductors', [App\Http\Controllers\AdminController::class, 'viewConductors'])->name('viewconductors.post');
+    Route::delete('/dashboard/viewconductors/{conductor_id}/delete', [App\Http\Controllers\AdminController::class, 'deleteConductor'])->name('deleteconductor.post');
+    Route::get('/dashboard/viewdrivers', [App\Http\Controllers\AdminController::class, 'viewDrivers'])->name('viewdrivers');
+    Route::post('/dashboard/viewdrivers', [App\Http\Controllers\AdminController::class, 'viewDrivers'])->name('viewdrivers.post');
+    Route::delete('/dashboard/viewdrivers/{driver_id}/delete', [App\Http\Controllers\AdminController::class, 'deleteDriver'])->name('deletedriver.post');
+    Route::get('/dashboard/viewschedules', [App\Http\Controllers\AdminController::class, 'viewSchedules'])->name('viewschedules');
+    Route::post('/dashboard/viewschedules', [App\Http\Controllers\AdminController::class, 'viewSchedules'])->name('viewschedules.post');
 });

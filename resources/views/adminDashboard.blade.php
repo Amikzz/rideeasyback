@@ -37,13 +37,13 @@
                         <a href="{{route('viewbuses')}}" class="block text-center bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Buses
                         </a>
-                        <a href="" class="block text-center bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{route('viewconductors')}}" class="block text-center bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Conductors
                         </a>
-                        <a href="" class="block text-center bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{route('viewdrivers')}}" class="block text-center bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Drivers
                         </a>
-                        <a href="" class="block text-center bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{route('viewschedules')}}" class="block text-center bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Schedules
                         </a>
                     </div>

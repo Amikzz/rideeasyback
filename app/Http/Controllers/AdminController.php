@@ -199,4 +199,104 @@ class AdminController extends Controller
             return redirect()->route('viewbuses')->with('error', 'An error occurred while activating bus');
         }
     }
+
+    //view conductors
+    public function viewConductors(Request $request)
+    {
+        try {
+            $conductorID = $request->input('conductor_id');
+
+            $query = DB::table('users')
+                ->select('users.*')
+                ->where('users.usertype', 'conductor');
+
+            if ($conductorID) {
+                $query = $query->where('users.conductor_admin_id', $conductorID);
+            }
+
+            $conductors = $query->get();
+
+            return view('admin.viewconductors', compact('conductors', 'conductorID'))->with('success', 'Conductors viewed successfully');
+        } catch (\Exception $e) {
+            // Initialize $conductors to an empty collection to avoid undefined variable
+            $conductors = collect();
+            return view('admin.viewconductors', compact('conductors'))->with('error', 'An error occurred while viewing conductors');
+        }
+    }
+
+    //delete a conductor
+    public function deleteConductor($conductor_id)
+    {
+        try {
+            DB::table('users')
+                ->where('conductor_admin_id', $conductor_id)
+                ->delete();
+
+            return redirect()->route('viewconductors')->with('success', 'Conductor deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('viewconductors')->with('error', 'An error occurred while deleting conductor');
+        }
+    }
+
+    //view all drivers
+    public function viewDrivers(Request $request)
+    {
+        try {
+            $driverID = $request->input('driver_id');
+
+            $query = DB::table('person')
+                ->select('person.*', 'driver.driver_id')
+                ->join('driver', 'person.id_number', '=', 'driver.id_number');
+
+            if ($driverID) {
+                $query = $query->where('driver.driver_id', $driverID);
+            }
+
+            $drivers = $query->get();
+
+            return view('admin.viewdrivers', compact('drivers', 'driverID'))->with('success', 'Drivers viewed successfully');
+        } catch (\Exception $e) {
+            // Initialize $drivers to an empty collection to avoid undefined variable
+            $drivers = collect();
+            return view('admin.viewdrivers', compact('drivers'))->with('error', 'An error occurred while viewing drivers');
+        }
+    }
+
+    //delete a driver
+    public function deleteDriver($driver_id)
+    {
+        try {
+            DB::table('driver')
+                ->where('driver_id', $driver_id)
+                ->delete();
+
+            return redirect()->route('viewdrivers')->with('success', 'Driver deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('viewdrivers')->with('error', 'An error occurred while deleting driver');
+        }
+    }
+
+    //view schedules
+    public function viewSchedules(Request $request)
+    {
+        try {
+            $scheduleDate = $request->input('schedule_date');
+
+            $querry = DB::table('schedule')
+                ->join('route', 'schedule.route_id', '=', 'route.route_id')
+                ->select('schedule.*', 'route.route_number', 'route.start_location', 'route.end_location');
+
+            if ($scheduleDate) {
+                $querry = $querry->where('schedule.schedule_id', $scheduleDate);
+            }
+
+            $schedules = $querry->get();
+
+            return view('admin.viewschedule', compact('schedules'))->with('success', 'Schedules viewed successfully');
+        } catch (\Exception $e) {
+            // Initialize $schedules to an empty collection to avoid undefined variable
+            $schedules = collect();
+            return view('admin.viewschedule', compact('schedules'))->with('error', 'An error occurred while viewing schedules');
+        }
+    }
 }
