@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Bus;
 use App\Models\ReviewModel;
 use App\Models\SupportModel;
+use App\Models\Ticket;
+use BaconQrCode\Encoder\QrCode;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -167,5 +170,50 @@ class UserController extends Controller
             ]
         );
         return response()->json(['status' => 'Support request submitted successfully']);
+    }
+
+    public function bookTicket(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'bus_license_plate_no' => 'required|exists:bus,bus_license_plate_no',
+            'passenger_id' => 'required|string',
+        ]);
+
+        //check is the bus is avalaiable in busdriverconductoor
+        $busExists = DB::table('busdriverconductor')
+            ->where('bus_license_plate_no', $request->bus_license_plate_no)
+            ->exists();
+
+        // Create a new ticket with a unique ID
+        $ticket = Ticket::create([
+            'bus_license_plate_no' => $request->bus_license_plate_no,
+            'passenger_id' => $request->passenger_id,
+            'status' => 'Booked',
+            'ticket_id' => Str::uuid(), // Generate a unique ticket ID
+        ]);
+
+        // Return ticket details including ticket ID
+        return response()->json([
+            'ticket' => $ticket,
+            'ticket_id' => $ticket->ticket_id,
+        ]);
+    }
+
+    public function validateTicket(Request $request)
+    {
+        $request->validate([
+            'ticket_id' => 'required|string',
+        ]);
+
+        $ticket = Ticket::where('ticket_id', $request->ticket_id)->first();
+
+        if ($ticket) {
+            $ticket->status = 'Active';
+            $ticket->save();
+            return response()->json(['message' => 'Ticket validated successfully.']);
+        } else {
+            return response()->json(['message' => 'Invalid ticket.'], 404);
+        }
     }
 }
