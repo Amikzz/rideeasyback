@@ -189,6 +189,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Bus not found.'], 404);
         }
 
+
         // Create a new ticket with a unique ID
         $ticket = Ticket::create([
             'bus_license_plate_no' => $request->bus_license_plate_no,
