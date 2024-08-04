@@ -52,4 +52,6 @@ Route::middleware([
     Route::get('/dashboard/viewsupportrequestsconductor', [App\Http\Controllers\AdminController::class, 'viewConductorSupportRequests'])->name('viewsupportrequestsconductor');
     Route::post('/dashboard/viewsupportrequestsconductor/{id}/attended', [App\Http\Controllers\AdminController::class, 'editConductorSupportRequests'])->name('viewsupportrequestsconductor.post');
     Route::get('/dashboard/viewreviews', [App\Http\Controllers\AdminController::class, 'viewUserReviews'])->name('viewUserReviews');
+    Route::get('/dashboard/validateticket', [App\Http\Controllers\ConductorController::class, 'showValidateTicketPage'])->name('validateticket');
+    Route::post('/dashboard/validateticket', [App\Http\Controllers\ConductorController::class, 'validateTicket'])->name('validateticket.post');
 });

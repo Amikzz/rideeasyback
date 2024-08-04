@@ -208,21 +208,46 @@ class ConductorController extends Controller
         }
     }
 
+    //show validate ticket page
+    public function showValidateTicketPage(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+    {
+        return view('tickets');
+    }
+
     // Validate ticket
-//    public function validateTicket(Request $request)
-//    {
-//        $request->validate([
-//            'ticket_id' => 'required|string',
-//        ]);
-//
-//        $ticket = Ticket::where('ticket_id', $request->ticket_id)->first();
-//
-//        if ($ticket) {
-//            $ticket->status = 'Active';
-//            $ticket->save();
-//            return redirect()->route('viewtrips')->with('success', 'Ticket validated successfully');
-//        } else {
-//            return redirect()->route('viewtrips')->with('error', 'Ticket not found');
-//        }
-//    }
+    public function validateTicket(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
+
+        try {
+            // Retrieve the ticket based on the provided ID
+            $ticket = DB::table('tickets')->where('id', $request->id)->first();
+
+            if ($ticket) {
+                // Check if the ticket is already active or booked
+                if ($ticket->status === 'Active') {
+                    // If ticket is already active, return an error message
+                    return redirect()->route('validateticket')->with('error', 'This ticket has already been used.');
+                } elseif ($ticket->status === 'Booked') {
+                    // If ticket is booked but not yet active, you might handle it differently if needed
+                    // Here we consider it as active
+                    DB::table('tickets')->where('id', $request->id)->update(['status' => 'Active']);
+                    session()->flash('ticket', $ticket);
+                    return redirect()->route('validateticket')->with('success', 'Ticket validated successfully');
+                } else {
+                    // Update the ticket status to active
+                    DB::table('tickets')->where('id', $request->id)->update(['status' => 'Active']);
+                    session()->flash('ticket', $ticket);
+                    return redirect()->route('validateticket')->with('success', 'Ticket validated successfully');
+                }
+            } else {
+                return redirect()->route('validateticket')->with('error', 'Ticket not found');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error validating ticket: ' . $e->getMessage());
+            return redirect()->route('validateticket')->with('error', 'Failed to validate ticket');
+        }
+    }
 }
