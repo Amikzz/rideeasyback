@@ -12,5 +12,5 @@ Route::get('/view-bus-schedule', [UserController::class, 'viewBusSchedule'])->na
 Route::get('/location-get', [UserController::class, 'locationget'])->name('locationget');
 Route::post('/review-post', [UserController::class, 'reviewStore'])->name('review.post');
 Route::post('/support-post', [UserController::class, 'supportRequest'])->name('support.get');
+Route::post('/search-bus', [UserController::class, 'searchBus'])->name('search.bus');
 Route::post('/book-ticket', [UserController::class, 'bookTicket'])->name('book.ticket');
-Route::post('/validate-ticket', [UserController::class, 'validateTicket'])->name('validate.ticket');

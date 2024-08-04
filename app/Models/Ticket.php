@@ -14,6 +14,11 @@ class Ticket extends Model
     protected $fillable = [
         'bus_license_plate_no',
         'passenger_id',
+        'trip_id',
+        'start_location',
+        'end_location',
+        'date',
+        'departure_time',
         'status',
         'ticket_id'
     ];
