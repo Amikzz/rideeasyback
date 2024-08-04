@@ -34,40 +34,71 @@
                     @if($supportRequestsConductor->isEmpty())
                         <p>No Support Requests found.</p>
                     @else
+                        <!-- Desktop View -->
                         <div class="hidden sm:block">
-                            <table class="table-auto w-full">
-                                <thead>
-                                <tr>
-                                    <th class="px-4 py-2">Record Number</th>
-                                    <th class="px-4 py-2">Conductor Name</th>
-                                    <th class="px-4 py-2">Conductor ID</th>
-                                    <th class="px-4 py-2">Request</th>
-                                    <th class="px-4 py-2">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($supportRequestsConductor as $supportRequestConductor)
+                            <div class="overflow-x-auto">
+                                <table class="table-auto w-full min-w-full">
+                                    <thead>
                                     <tr>
-                                        <td class="border px-4 py-2">{{ $supportRequestConductor->id }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequestConductor->conductor_name }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequestConductor->conductor_id }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequestConductor->request }}</td>
-                                        <td class="border px-4 py-2">
-                                            @if($supportRequestConductor->status === 'Pending')
-                                                <form method="POST" action="{{route('viewsupportrequestsconductor.post', $supportRequestConductor->id)}}">
-                                                    @csrf
-                                                    <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        {{ __('Issue Attended') }}
-                                                    </x-button>
-                                                </form>
-                                            @elseif($supportRequestConductor->status === 'Done')
-                                                <span class="text-green-600 text-lg"> Issue Sorted </span>
-                                            @endif
-                                        </td>
+                                        <th class="px-4 py-2">Record Number</th>
+                                        <th class="px-4 py-2">Conductor Name</th>
+                                        <th class="px-4 py-2">Conductor ID</th>
+                                        <th class="px-4 py-2">Request</th>
+                                        <th class="px-4 py-2">Action</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($supportRequestsConductor as $supportRequestConductor)
+                                        <tr>
+                                            <td class="border px-4 py-2">{{ $supportRequestConductor->id }}</td>
+                                            <td class="border px-4 py-2">{{ $supportRequestConductor->conductor_name }}</td>
+                                            <td class="border px-4 py-2">{{ $supportRequestConductor->conductor_id }}</td>
+                                            <td class="border px-4 py-2">{{ $supportRequestConductor->request }}</td>
+                                            <td class="border px-4 py-2">
+                                                @if($supportRequestConductor->status === 'Pending')
+                                                    <form method="POST" action="{{ route('viewsupportrequestsconductor.post', $supportRequestConductor->id) }}">
+                                                        @csrf
+                                                        <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                            {{ __('Issue Attended') }}
+                                                        </x-button>
+                                                    </form>
+                                                @elseif($supportRequestConductor->status === 'Done')
+                                                    <span class="text-green-600 text-lg">Issue Sorted</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Mobile View -->
+                        <div class="sm:hidden">
+                            @foreach($supportRequestsConductor as $supportRequestConductor)
+                                <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+                                    <p class="text-gray-700"><strong>Record Number:</strong> {{ $supportRequestConductor->id }}</p>
+                                    <p class="text-gray-700"><strong>Conductor Name:</strong> {{ $supportRequestConductor->conductor_name }}</p>
+                                    <p class="text-gray-700"><strong>Conductor ID:</strong> {{ $supportRequestConductor->conductor_id }}</p>
+                                    <p class="text-gray-700"><strong>Request:</strong> {{ $supportRequestConductor->request }}</p>
+                                    <p class="text-gray-700"><strong>Status:</strong>
+                                        @if($supportRequestConductor->status === 'Pending')
+                                            <span class="text-blue-600">Pending</span>
+                                        @elseif($supportRequestConductor->status === 'Done')
+                                            <span class="text-green-600">Issue Sorted</span>
+                                        @endif
+                                    </p>
+                                    <br>
+                                    @if($supportRequestConductor->status === 'Pending')
+                                        <form method="POST" action="{{ route('viewsupportrequestsconductor.post', $supportRequestConductor->id) }}">
+                                            @csrf
+                                            <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                {{ __('Issue Attended') }}
+                                            </x-button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     @endif
                 </div>

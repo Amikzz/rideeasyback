@@ -34,6 +34,7 @@
                     @if($safetyButtonRecords->isEmpty())
                         <p>No Safety Button Triggers found.</p>
                     @else
+                        <!-- Desktop View -->
                         <div class="hidden sm:block">
                             <table class="table-auto w-full">
                                 <thead>
@@ -46,17 +47,30 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($safetyButtonRecords as $safetyButtonRecord)
+                                @foreach($safetyButtonRecords as $record)
                                     <tr>
-                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->id_number }}</td>
-                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->first_name }}</td>
-                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->last_name }}</td>
-                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->latitude }}</td>
-                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->longitude }}</td>
+                                        <td class="border px-4 py-2">{{ $record->id_number }}</td>
+                                        <td class="border px-4 py-2">{{ $record->first_name }}</td>
+                                        <td class="border px-4 py-2">{{ $record->last_name }}</td>
+                                        <td class="border px-4 py-2">{{ $record->latitude }}</td>
+                                        <td class="border px-4 py-2">{{ $record->longitude }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Mobile View -->
+                        <div class="sm:hidden">
+                            @foreach($safetyButtonRecords as $record)
+                                <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+                                    <p class="text-gray-700"><strong>ID Number:</strong> {{ $record->id_number }}</p>
+                                    <p class="text-gray-700"><strong>First Name:</strong> {{ $record->first_name }}</p>
+                                    <p class="text-gray-700"><strong>Last Name:</strong> {{ $record->last_name }}</p>
+                                    <p class="text-gray-700"><strong>Latitude:</strong> {{ $record->latitude }}</p>
+                                    <p class="text-gray-700"><strong>Longitude:</strong> {{ $record->longitude }}</p>
+                                </div>
+                            @endforeach
                         </div>
                     @endif
                 </div>

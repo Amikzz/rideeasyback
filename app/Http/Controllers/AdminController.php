@@ -379,4 +379,20 @@ class AdminController extends Controller
             return view('admin.safetybuttonrecords', compact('safetyButtonRecords'))->with('error', 'An error occurred while viewing safety button records');
         }
     }
+
+    //view user reviews
+    public function viewUserReviews()
+    {
+        try {
+            $userReviews = DB::table('review')
+                ->select('review.*')
+                ->get();
+
+            return view('admin.viewreviews', compact('userReviews'))->with('success', 'User reviews viewed successfully');
+        } catch (\Exception $e) {
+            // Initialize $userReviews to an empty collection to avoid undefined variable
+            $userReviews = collect();
+            return view('admin.viewreviews', compact('userReviews'))->with('error', 'An error occurred while viewing user reviews');
+        }
+    }
 }

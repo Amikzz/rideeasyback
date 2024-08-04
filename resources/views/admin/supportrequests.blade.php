@@ -34,42 +34,74 @@
                     @if($supportRequests->isEmpty())
                         <p>No Support Requests found.</p>
                     @else
+                        <!-- Desktop View -->
                         <div class="hidden sm:block">
-                            <table class="table-auto w-full">
-                                <thead>
-                                <tr>
-                                    <th class="px-4 py-2">ID</th>
-                                    <th class="px-4 py-2">Name</th>
-                                    <th class="px-4 py-2">Email</th>
-                                    <th class="px-4 py-2">Phone Number</th>
-                                    <th class="px-4 py-2">Request</th>
-                                    <th class="px-4 py-2">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($supportRequests as $supportRequest)
+                            <div class="overflow-x-auto">
+                                <table class="table-auto w-full min-w-full">
+                                    <thead>
                                     <tr>
-                                        <td class="border px-4 py-2">{{ $supportRequest->id }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->name }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->email }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->phone }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->issue }}</td>
-                                        <td class="border px-4 py-2">
-                                            @if($supportRequest->status === 'pending')
-                                                <form method="POST" action="{{route('viewsupportrequests.post', $supportRequest->id)}}">
-                                                    @csrf
-                                                    <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        {{ __('Issues Attended') }}
-                                                    </x-button>
-                                                </form>
-                                            @elseif($supportRequest->status === 'done')
-                                                <span class="text-green-600 text-lg"> Issue Sorted </span>
-                                            @endif
-                                        </td>
+                                        <th class="px-4 py-2">ID</th>
+                                        <th class="px-4 py-2">Name</th>
+                                        <th class="px-4 py-2">Email</th>
+                                        <th class="px-4 py-2">Phone Number</th>
+                                        <th class="px-4 py-2">Request</th>
+                                        <th class="px-4 py-2">Action</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($supportRequests as $supportRequest)
+                                        <tr>
+                                            <td class="border px-4 py-2">{{ $supportRequest->id }}</td>
+                                            <td class="border px-4 py-2">{{ $supportRequest->name }}</td>
+                                            <td class="border px-4 py-2">{{ $supportRequest->email }}</td>
+                                            <td class="border px-4 py-2">{{ $supportRequest->phone }}</td>
+                                            <td class="border px-4 py-2">{{ $supportRequest->issue }}</td>
+                                            <td class="border px-4 py-2">
+                                                @if($supportRequest->status === 'pending')
+                                                    <form method="POST" action="{{ route('viewsupportrequests.post', $supportRequest->id) }}">
+                                                        @csrf
+                                                        <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                            {{ __('Issue Attended') }}
+                                                        </x-button>
+                                                    </form>
+                                                @elseif($supportRequest->status === 'done')
+                                                    <span class="text-green-600 text-lg">Issue Sorted</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Mobile View -->
+                        <div class="sm:hidden">
+                            @foreach($supportRequests as $supportRequest)
+                                <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+                                    <p class="text-gray-700"><strong>ID:</strong> {{ $supportRequest->id }}</p>
+                                    <p class="text-gray-700"><strong>Name:</strong> {{ $supportRequest->name }}</p>
+                                    <p class="text-gray-700"><strong>Email:</strong> {{ $supportRequest->email }}</p>
+                                    <p class="text-gray-700"><strong>Phone Number:</strong> {{ $supportRequest->phone }}</p>
+                                    <p class="text-gray-700"><strong>Request:</strong> {{ $supportRequest->issue }}</p>
+                                    <p class="text-gray-700"><strong>Status:</strong>
+                                        @if($supportRequest->status === 'pending')
+                                            <span class="text-blue-600">Pending</span>
+                                        @elseif($supportRequest->status === 'done')
+                                            <span class="text-green-600">Issue Sorted</span>
+                                        @endif
+                                    </p>
+                                    <br>
+                                    @if($supportRequest->status === 'pending')
+                                        <form method="POST" action="{{ route('viewsupportrequests.post', $supportRequest->id) }}">
+                                            @csrf
+                                            <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                {{ __('Issue Attended') }}
+                                            </x-button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     @endif
                 </div>

@@ -55,8 +55,8 @@
                         <a href="{{route('viewsafetybuttonrecords')}}" class="block text-center bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Safety Triggers
                         </a>
-                        <a href="#" class="block text-center bg-lime-600 hover:bg-lime-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
-                            View Admins
+                        <a href="{{route('viewUserReviews')}}" class="block text-center bg-lime-600 hover:bg-lime-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            View User Feedback
                         </a>
                     </div>
                 </div>

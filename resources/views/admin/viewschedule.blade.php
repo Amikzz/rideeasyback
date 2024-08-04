@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                    <form method="POST" action="{{route('viewschedules.post')}}">
+                    <form method="POST" action="{{ route('viewschedules.post') }}">
                         @csrf
                         <div class="flex flex-col sm:flex-row items-center">
                             <x-label for="schedule_date" value="{{ __('Schedule Date') }}" />
@@ -47,27 +47,30 @@
                     @if($schedules->isEmpty())
                         <p>No schedules found for the selected date.</p>
                     @else
-                        <div class="overflow-x-auto">
-                            <table class="table-auto w-full min-w-full">
-                                <thead>
-                                <tr>
-                                    <th class="px-4 py-2">Date</th>
-                                    <th class="px-4 py-2">Route Number</th>
-                                    <th class="px-4 py-2">Start Location</th>
-                                    <th class="px-4 py-2">End Location</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($schedules as $schedule)
+                        <!-- Desktop View -->
+                        <div class="hidden sm:block">
+                            <div class="overflow-x-auto">
+                                <table class="table-auto w-full min-w-full">
+                                    <thead>
                                     <tr>
-                                        <td class="border px-4 py-2">{{ $schedule->schedule_id }}</td>
-                                        <td class="border px-4 py-2">{{ $schedule->route_number }}</td>
-                                        <td class="border px-4 py-2">{{ $schedule->start_location }}</td>
-                                        <td class="border px-4 py-2">{{ $schedule->end_location }}</td>
+                                        <th class="px-4 py-2">Date</th>
+                                        <th class="px-4 py-2">Route Number</th>
+                                        <th class="px-4 py-2">Start Location</th>
+                                        <th class="px-4 py-2">End Location</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($schedules as $schedule)
+                                        <tr>
+                                            <td class="border px-4 py-2">{{ $schedule->schedule_id }}</td>
+                                            <td class="border px-4 py-2">{{ $schedule->route_number }}</td>
+                                            <td class="border px-4 py-2">{{ $schedule->start_location }}</td>
+                                            <td class="border px-4 py-2">{{ $schedule->end_location }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         <!-- Mobile View -->
@@ -75,7 +78,7 @@
                             @foreach($schedules as $schedule)
                                 <div class="bg-white shadow-md rounded-lg p-4 mb-4">
                                     <p class="text-gray-700"><strong>Schedule ID:</strong> {{ $schedule->schedule_id }}</p>
-                                    <p class="text-gray-700"><strong>Route:</strong> {{ $schedule->route_number }}</p>
+                                    <p class="text-gray-700"><strong>Route Number:</strong> {{ $schedule->route_number }}</p>
                                     <p class="text-gray-700"><strong>Start Location:</strong> {{ $schedule->start_location }}</p>
                                     <p class="text-gray-700"><strong>End Location:</strong> {{ $schedule->end_location }}</p>
                                 </div>
