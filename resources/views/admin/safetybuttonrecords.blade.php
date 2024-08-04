@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('View Support Requests') }}
+            {{ __('View Safety Button Records') }}
         </h2>
     </x-slot>
 
@@ -26,46 +26,33 @@
 
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                     <div class="mt-8 text-2xl">
-                        View All the Support Requests
+                        View All the Safety Button Records
                     </div>
                 </div>
 
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                    @if($supportRequests->isEmpty())
-                        <p>No Support Requests found.</p>
+                    @if($safetyButtonRecords->isEmpty())
+                        <p>No Safety Button Triggers found.</p>
                     @else
                         <div class="hidden sm:block">
                             <table class="table-auto w-full">
                                 <thead>
                                 <tr>
-                                    <th class="px-4 py-2">ID</th>
-                                    <th class="px-4 py-2">Name</th>
-                                    <th class="px-4 py-2">Email</th>
-                                    <th class="px-4 py-2">Phone Number</th>
-                                    <th class="px-4 py-2">Request</th>
-                                    <th class="px-4 py-2">Action</th>
+                                    <th class="px-4 py-2">ID Number</th>
+                                    <th class="px-4 py-2">First Name</th>
+                                    <th class="px-4 py-2">Last Name</th>
+                                    <th class="px-4 py-2">Latitude</th>
+                                    <th class="px-4 py-2">Longitude</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($supportRequests as $supportRequest)
+                                @foreach($safetyButtonRecords as $safetyButtonRecord)
                                     <tr>
-                                        <td class="border px-4 py-2">{{ $supportRequest->id }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->name }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->email }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->phone }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->issue }}</td>
-                                        <td class="border px-4 py-2">
-                                            @if($supportRequest->status === 'pending')
-                                                <form method="POST" action="{{route('viewsupportrequests.post', $supportRequest->id)}}">
-                                                    @csrf
-                                                    <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        {{ __('Issues Attended') }}
-                                                    </x-button>
-                                                </form>
-                                            @elseif($supportRequest->status === 'done')
-                                                <span class="text-green-600 text-lg"> Issue Sorted </span>
-                                            @endif
-                                        </td>
+                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->id_number }}</td>
+                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->first_name }}</td>
+                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->last_name }}</td>
+                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->latitude }}</td>
+                                        <td class="border px-4 py-2">{{ $safetyButtonRecord->longitude }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

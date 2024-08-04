@@ -47,13 +47,13 @@
                             View Schedules
                         </a>
                         <a href="{{ route('viewsupportrequests') }}" class="block text-center bg-pink-600 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
-                            View Support Requests
-                        </a>
-                        <a href="" class="block text-center bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
-                            View Safety Triggers
+                            Passenger Support
                         </a>
                         <a href="#" class="block text-center bg-cyan-600 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
-                            Add Admin
+                            Conductor Support
+                        </a>
+                        <a href="{{route('viewsafetybuttonrecords')}}" class="block text-center bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            View Safety Triggers
                         </a>
                         <a href="#" class="block text-center bg-lime-600 hover:bg-lime-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Admins

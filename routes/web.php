@@ -48,4 +48,5 @@ Route::middleware([
     Route::post('/dashboard/viewschedules', [App\Http\Controllers\AdminController::class, 'viewSchedules'])->name('viewschedules.post');
     Route::get('/dashboard/viewsupportrequests', [App\Http\Controllers\AdminController::class, 'viewSupportRequests'])->name('viewsupportrequests');
     Route::post('/dashboard/viewsupportrequests/{id}/attended', [App\Http\Controllers\AdminController::class, 'editSupportRequests'])->name('viewsupportrequests.post');
+    Route::get('/dashboard/viewsafetybuttonrecords', [App\Http\Controllers\AdminController::class, 'viewSafetyButtonRecords'])->name('viewsafetybuttonrecords');
 });

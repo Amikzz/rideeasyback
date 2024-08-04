@@ -15,5 +15,6 @@ class ConductorSupportModel extends Model
         'conductor_name',
         'conductor_id',
         'request',
+        'status',
     ];
 }
