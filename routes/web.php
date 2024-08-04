@@ -49,4 +49,6 @@ Route::middleware([
     Route::get('/dashboard/viewsupportrequests', [App\Http\Controllers\AdminController::class, 'viewSupportRequests'])->name('viewsupportrequests');
     Route::post('/dashboard/viewsupportrequests/{id}/attended', [App\Http\Controllers\AdminController::class, 'editSupportRequests'])->name('viewsupportrequests.post');
     Route::get('/dashboard/viewsafetybuttonrecords', [App\Http\Controllers\AdminController::class, 'viewSafetyButtonRecords'])->name('viewsafetybuttonrecords');
+    Route::get('/dashboard/viewsupportrequestsconductor', [App\Http\Controllers\AdminController::class, 'viewConductorSupportRequests'])->name('viewsupportrequestsconductor');
+    Route::post('/dashboard/viewsupportrequestsconductor/{id}/attended', [App\Http\Controllers\AdminController::class, 'editConductorSupportRequests'])->name('viewsupportrequestsconductor.post');
 });

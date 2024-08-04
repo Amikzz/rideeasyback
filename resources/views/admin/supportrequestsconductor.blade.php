@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('View Passenger\'s Support Requests') }}
+            {{ __('View Conductor\'s Support Requests') }}
         </h2>
     </x-slot>
 
@@ -26,43 +26,41 @@
 
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                     <div class="mt-8 text-2xl">
-                        View All Passenger's Support Requests
+                        View All the Conductor's Support Requests
                     </div>
                 </div>
 
                 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                    @if($supportRequests->isEmpty())
+                    @if($supportRequestsConductor->isEmpty())
                         <p>No Support Requests found.</p>
                     @else
                         <div class="hidden sm:block">
                             <table class="table-auto w-full">
                                 <thead>
                                 <tr>
-                                    <th class="px-4 py-2">ID</th>
-                                    <th class="px-4 py-2">Name</th>
-                                    <th class="px-4 py-2">Email</th>
-                                    <th class="px-4 py-2">Phone Number</th>
+                                    <th class="px-4 py-2">Record Number</th>
+                                    <th class="px-4 py-2">Conductor Name</th>
+                                    <th class="px-4 py-2">Conductor ID</th>
                                     <th class="px-4 py-2">Request</th>
                                     <th class="px-4 py-2">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($supportRequests as $supportRequest)
+                                @foreach($supportRequestsConductor as $supportRequestConductor)
                                     <tr>
-                                        <td class="border px-4 py-2">{{ $supportRequest->id }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->name }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->email }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->phone }}</td>
-                                        <td class="border px-4 py-2">{{ $supportRequest->issue }}</td>
+                                        <td class="border px-4 py-2">{{ $supportRequestConductor->id }}</td>
+                                        <td class="border px-4 py-2">{{ $supportRequestConductor->conductor_name }}</td>
+                                        <td class="border px-4 py-2">{{ $supportRequestConductor->conductor_id }}</td>
+                                        <td class="border px-4 py-2">{{ $supportRequestConductor->request }}</td>
                                         <td class="border px-4 py-2">
-                                            @if($supportRequest->status === 'pending')
-                                                <form method="POST" action="{{route('viewsupportrequests.post', $supportRequest->id)}}">
+                                            @if($supportRequestConductor->status === 'Pending')
+                                                <form method="POST" action="{{route('viewsupportrequestsconductor.post', $supportRequestConductor->id)}}">
                                                     @csrf
                                                     <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        {{ __('Issues Attended') }}
+                                                        {{ __('Issue Attended') }}
                                                     </x-button>
                                                 </form>
-                                            @elseif($supportRequest->status === 'done')
+                                            @elseif($supportRequestConductor->status === 'Done')
                                                 <span class="text-green-600 text-lg"> Issue Sorted </span>
                                             @endif
                                         </td>

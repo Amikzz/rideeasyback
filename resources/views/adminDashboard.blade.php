@@ -49,7 +49,7 @@
                         <a href="{{ route('viewsupportrequests') }}" class="block text-center bg-pink-600 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             Passenger Support
                         </a>
-                        <a href="#" class="block text-center bg-cyan-600 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{route('viewsupportrequestsconductor')}}" class="block text-center bg-cyan-600 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             Conductor Support
                         </a>
                         <a href="{{route('viewsafetybuttonrecords')}}" class="block text-center bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">

@@ -332,6 +332,38 @@ class AdminController extends Controller
         }
     }
 
+    //view conductor support requests
+    public function viewConductorSupportRequests()
+    {
+        try {
+            // Modify the query to sort support requests by status
+            $supportRequestsConductor = DB::table('_conductor_support')
+                ->select('_conductor_support.*')
+                ->orderByRaw("CASE WHEN status = 'Pending' THEN 1 ELSE 2 END") // Sorting: 'pending' first, 'done' last
+                ->get();
+
+            return view('admin.supportrequestsconductor', compact('supportRequestsConductor'))->with('success', 'Support requests viewed successfully');
+        } catch (\Exception $e) {
+            // Initialize $supportRequests to an empty collection to avoid undefined variable
+            $supportRequestsConductor = collect();
+            return view('admin.supportrequestsconductor', compact('supportRequestsConductor'))->with('error', 'An error occurred while viewing support requests');
+        }
+    }
+
+    //make conductor supportbutton status as done
+    public function editConductorSupportRequests($id)
+    {
+        try {
+            DB::table('_conductor_support')
+                ->where('id', $id)
+                ->update(['status' => 'Done']);
+
+            return redirect()->route('viewsupportrequestsconductor')->with('success', 'Support request status updated successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('viewsupportrequestsconductor')->with('error', 'An error occurred while updating support request status');
+        }
+    }
+
     //view safety button records
     public function viewSafetyButtonRecords()
     {
