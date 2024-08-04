@@ -41,7 +41,7 @@
                                     <thead>
                                     <tr>
                                         <th class="px-4 py-2">ID</th>
-                                        <th class="px-4 py-2">Passenger_id</th>
+                                        <th class="px-4 py-2">Passenger ID</th>
                                         <th class="px-4 py-2">Bus License Plate Number</th>
                                         <th class="px-4 py-2">Review</th>
                                     </tr>
@@ -58,6 +58,18 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+
+                        <!-- Mobile View -->
+                        <div class="sm:hidden">
+                            @foreach($userReviews as $review)
+                                <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+                                    <p class="text-gray-700"><strong>ID:</strong> {{ $review->id }}</p>
+                                    <p class="text-gray-700"><strong>Passenger ID:</strong> {{ $review->user_id }}</p>
+                                    <p class="text-gray-700"><strong>Bus License Plate Number:</strong> {{ $review->bus_license_plate_no }}</p>
+                                    <p class="text-gray-700"><strong>Review:</strong> {{ $review->review }}</p>
+                                </div>
+                            @endforeach
                         </div>
                     @endif
                 </div>
