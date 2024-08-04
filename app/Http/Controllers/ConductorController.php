@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BusDriverConductor;
 use App\Models\ConductorSupportModel;
+use App\Models\Ticket;
 use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -206,4 +207,22 @@ class ConductorController extends Controller
             return redirect()->route('support')->with('error', 'Failed to Submit the Support Request');
         }
     }
+
+    // Validate ticket
+//    public function validateTicket(Request $request)
+//    {
+//        $request->validate([
+//            'ticket_id' => 'required|string',
+//        ]);
+//
+//        $ticket = Ticket::where('ticket_id', $request->ticket_id)->first();
+//
+//        if ($ticket) {
+//            $ticket->status = 'Active';
+//            $ticket->save();
+//            return redirect()->route('viewtrips')->with('success', 'Ticket validated successfully');
+//        } else {
+//            return redirect()->route('viewtrips')->with('error', 'Ticket not found');
+//        }
+//    }
 }

@@ -172,28 +172,67 @@ class UserController extends Controller
         return response()->json(['status' => 'Support request submitted successfully']);
     }
 
+    //search bus and date and time
+    public function searchBus(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'start_location' => 'required|string',
+            'end_location' => 'required|string',
+        ]);
+
+        $date = $request->date;
+        $startLocation = $request->start_location;
+        $endLocation = $request->end_location;
+
+        try{
+            $query = DB::table('trip')
+                ->join('busdriverconductor', 'trip.bus_with_driver_conductor_id', '=', 'busdriverconductor.bus_with_driver_conductor')
+                ->join('schedule', 'trip.schedule_id', '=', 'schedule.schedule_id')
+                ->join('route', 'schedule.route_id', '=', 'route.route_id')
+                ->select(
+                    'trip.trip_id',
+                    'busdriverconductor.bus_license_plate_no',
+                    'route.start_location',
+                    'route.end_location',
+                    'schedule.date',
+                    'trip.departure_time',
+                    'trip.arrival_time'
+                )
+                ->where('route.start_location', $startLocation)
+                ->where('route.end_location', $endLocation)
+                ->whereDate('schedule.date', $date);
+
+            $trips = $query->get();
+            return response()->json($trips)->setStatusCode(200);
+        }catch(\Exception $e){
+            return response()->json(['error' => 'No buses found.'], 404);
+        }
+    }
+
+    //book ticket
     public function bookTicket(Request $request)
     {
         // Validate input
         $request->validate([
             'bus_license_plate_no' => 'required|exists:bus,bus_license_plate_no',
             'passenger_id' => 'required|string',
+            'trip_id' => 'required|string',
+            'start_location' => 'required|string',
+            'end_location' => 'required|string',
+            'date' => 'required|date',
+            'departure_time' => 'required|date_format:H:i:s',
         ]);
-
-        //check is the bus is avalaiable in busdriverconductoor
-        $busExists = DB::table('busdriverconductor')
-            ->where('bus_license_plate_no', $request->bus_license_plate_no)
-            ->exists();
-
-        if (!$busExists) {
-            return response()->json(['error' => 'Bus not found.'], 404);
-        }
-
 
         // Create a new ticket with a unique ID
         $ticket = Ticket::create([
             'bus_license_plate_no' => $request->bus_license_plate_no,
             'passenger_id' => $request->passenger_id,
+            'trip_id' => $request->trip_id,
+            'start_location' => $request->start_location,
+            'end_location' => $request->end_location,
+            'date' => $request->date,
+            'departure_time' => $request->departure_time,
             'status' => 'Booked',
             'ticket_id' => Str::uuid(), // Generate a unique ticket ID
         ]);
@@ -201,24 +240,6 @@ class UserController extends Controller
         // Return ticket details including ticket ID
         return response()->json([
             'ticket' => $ticket,
-            'ticket_id' => $ticket->ticket_id,
-        ]);
-    }
-
-    public function validateTicket(Request $request)
-    {
-        $request->validate([
-            'ticket_id' => 'required|string',
-        ]);
-
-        $ticket = Ticket::where('ticket_id', $request->ticket_id)->first();
-
-        if ($ticket) {
-            $ticket->status = 'Active';
-            $ticket->save();
-            return response()->json(['message' => 'Ticket validated successfully.']);
-        } else {
-            return response()->json(['message' => 'Invalid ticket.'], 404);
-        }
+            'message' => 'Ticket booked successfully',]);
     }
 }
