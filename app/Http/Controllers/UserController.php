@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Twilio\Rest\Client;
 
 class UserController extends Controller
 {
@@ -241,5 +242,56 @@ class UserController extends Controller
         return response()->json([
             'ticket' => $ticket,
             'message' => 'Ticket booked successfully',]);
+    }
+
+    //safety button
+    public  function safetyButton(Request $request)
+    {
+        $request->validate([
+            'id_number' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        try {
+            $id_number = $request->id_number;
+            $first_name = $request->first_name;
+            $last_name = $request->last_name;
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            // add these details to ane table called safety_button
+            DB::table('safety_button')->insert([
+                'id_number' => $id_number,
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+
+//            // Send SMS alert using Twilio
+//            $sid = env('TWILIO_SID');
+//            $token = env('TWILIO_AUTH_TOKEN');
+//            $twilioNumber = env('TWILIO_PHONE_NUMBER');
+//            $client = new Client($sid, $token);
+//
+//            $client->messages->create(
+//                '+18777804236', // Emergency contact number
+//                [
+//                    'from' => $twilioNumber,
+//                    'body' => "Emergency Alert: User $first_name $last_name with ID number $id_number has pressed the safety button. Location: Latitude $latitude, Longitude $longitude."
+//                ]
+//            );
+
+
+            return response()->json(['status' => 'Safety button pressed successfully']);
+        }catch (\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

@@ -14,3 +14,4 @@ Route::post('/review-post', [UserController::class, 'reviewStore'])->name('revie
 Route::post('/support-post', [UserController::class, 'supportRequest'])->name('support.get');
 Route::post('/search-bus', [UserController::class, 'searchBus'])->name('search.bus');
 Route::post('/book-ticket', [UserController::class, 'bookTicket'])->name('book.ticket');
+Route::post('/safety-button', [UserController::class, 'safetyButton'])->name('safety.button');
