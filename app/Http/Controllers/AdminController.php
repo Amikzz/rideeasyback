@@ -299,4 +299,52 @@ class AdminController extends Controller
             return view('admin.viewschedule', compact('schedules'))->with('error', 'An error occurred while viewing schedules');
         }
     }
+
+    //view support requests
+    public function viewSupportRequests()
+    {
+        try {
+            // Modify the query to sort support requests by status
+            $supportRequests = DB::table('support')
+                ->select('support.*')
+                ->orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END") // Sorting: 'pending' first, 'done' last
+                ->get();
+
+            return view('admin.supportrequests', compact('supportRequests'))->with('success', 'Support requests viewed successfully');
+        } catch (\Exception $e) {
+            // Initialize $supportRequests to an empty collection to avoid undefined variable
+            $supportRequests = collect();
+            return view('admin.supportrequests', compact('supportRequests'))->with('error', 'An error occurred while viewing support requests');
+        }
+    }
+
+    //make supportbutton status as done
+    public function editSupportRequests($id)
+    {
+        try {
+            DB::table('support')
+                ->where('id', $id)
+                ->update(['status' => 'done']);
+
+            return redirect()->route('viewsupportrequests')->with('success', 'Support request status updated successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('viewsupportrequests')->with('error', 'An error occurred while updating support request status');
+        }
+    }
+
+    //view safety button records
+    public function viewSafetyButtonRecords()
+    {
+        try {
+            $safetyButtonRecords = DB::table('safety_button')
+                ->select('safety_button.*')
+                ->get();
+
+            return view('admin.safetybuttonrecords', compact('safetyButtonRecords'))->with('success', 'Safety button records viewed successfully');
+        } catch (\Exception $e) {
+            // Initialize $safetyButtonRecords to an empty collection to avoid undefined variable
+            $safetyButtonRecords = collect();
+            return view('admin.safetybuttonrecords', compact('safetyButtonRecords'))->with('error', 'An error occurred while viewing safety button records');
+        }
+    }
 }

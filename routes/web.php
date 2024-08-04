@@ -46,4 +46,6 @@ Route::middleware([
     Route::delete('/dashboard/viewdrivers/{driver_id}/delete', [App\Http\Controllers\AdminController::class, 'deleteDriver'])->name('deletedriver.post');
     Route::get('/dashboard/viewschedules', [App\Http\Controllers\AdminController::class, 'viewSchedules'])->name('viewschedules');
     Route::post('/dashboard/viewschedules', [App\Http\Controllers\AdminController::class, 'viewSchedules'])->name('viewschedules.post');
+    Route::get('/dashboard/viewsupportrequests', [App\Http\Controllers\AdminController::class, 'viewSupportRequests'])->name('viewsupportrequests');
+    Route::post('/dashboard/viewsupportrequests/{id}/attended', [App\Http\Controllers\AdminController::class, 'editSupportRequests'])->name('viewsupportrequests.post');
 });

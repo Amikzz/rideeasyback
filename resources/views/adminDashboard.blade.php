@@ -19,32 +19,44 @@
 
                     <!-- Buttons Section -->
                     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <a href="{{ route('addbus') }}" class="block text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('addbus') }}" class="block text-center bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             Add New Bus
                         </a>
-                        <a href="{{ route('addconductor') }}" class="block text-center bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('addconductor') }}" class="block text-center bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             Add Conductor
                         </a>
-                        <a href="{{ route('adddriver') }}" class="block text-center bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('adddriver') }}" class="block text-center bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             Add Driver
                         </a>
                         <form method="POST" action="{{ route('addschedule.post') }}" class="block text-center">
                             @csrf
-                            <button type="submit" class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                                 Add Schedule
                             </button>
                         </form>
-                        <a href="{{route('viewbuses')}}" class="block text-center bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('viewbuses') }}" class="block text-center bg-teal-600 hover:bg-teal-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Buses
                         </a>
-                        <a href="{{route('viewconductors')}}" class="block text-center bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('viewconductors') }}" class="block text-center bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Conductors
                         </a>
-                        <a href="{{route('viewdrivers')}}" class="block text-center bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('viewdrivers') }}" class="block text-center bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Drivers
                         </a>
-                        <a href="{{route('viewschedules')}}" class="block text-center bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        <a href="{{ route('viewschedules') }}" class="block text-center bg-orange-600 hover:bg-orange-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
                             View Schedules
+                        </a>
+                        <a href="{{ route('viewsupportrequests') }}" class="block text-center bg-pink-600 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            View Support Requests
+                        </a>
+                        <a href="" class="block text-center bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            View Safety Triggers
+                        </a>
+                        <a href="#" class="block text-center bg-cyan-600 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            Add Admin
+                        </a>
+                        <a href="#" class="block text-center bg-lime-600 hover:bg-lime-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            View Admins
                         </a>
                     </div>
                 </div>
