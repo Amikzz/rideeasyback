@@ -230,7 +230,7 @@ class UserController extends Controller
         // Check if the total number of tickets is more than 10
         $total_amount_of_tickets = $request->no_of_adults + $request->no_of_children;
         if ($total_amount_of_tickets > 10){
-            return response()->json(['error' => 'You can\'t purchase more than tickets at a time.'], 400);
+            return response()->json(['error' => 'You can\'t purchase more than 10 tickets at a time.'], 400);
         }
 
         // Check if the total number of tickets per trip is more than 70
