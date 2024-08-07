@@ -18,7 +18,10 @@ return new class extends Migration
             $table->date('date');
             $table->time('departure_time');
             $table->string('status')->default('Booked');
-            $table->string('qr_code')->unique();
+            $table->string('ticket_id')->unique();
+            $table->integer('no_of_adults');
+            $table->integer('no_of_children');
+            $table->integer('amount');
             $table->timestamps();
 
             $table->foreign('bus_license_plate_no')->references('bus_license_plate_no')->on('bus');

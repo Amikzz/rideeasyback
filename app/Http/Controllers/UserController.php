@@ -223,7 +223,20 @@ class UserController extends Controller
             'end_location' => 'required|string',
             'date' => 'required|date',
             'departure_time' => 'required|date_format:H:i:s',
+            'no_of_adults' => 'required|integer',
+            'no_of_children' => 'required|integer',
         ]);
+
+        //limit the number of tickets per person to 5 (both children and adults)
+        $ticketCount = Ticket::where('passenger_id', $request->passenger_id)->count();
+        if ($ticketCount >= 5) {
+            return response()->json(['error' => 'You have reached the maximum number of tickets allowed.'], 400);
+        }
+
+        // calculate the amount to be paid adult = 100 children = 50
+        $adultAmount = $request->no_of_adults * 100;
+        $childrenAmount = $request->no_of_children * 50;
+        $totalAmount = $adultAmount + $childrenAmount;
 
         // Create a new ticket with a unique ID
         $ticket = Ticket::create([
@@ -234,6 +247,9 @@ class UserController extends Controller
             'end_location' => $request->end_location,
             'date' => $request->date,
             'departure_time' => $request->departure_time,
+            'no_of_adults' => $request->no_of_adults,
+            'no_of_children' => $request->no_of_children,
+            'amount' => $totalAmount,
             'status' => 'Booked',
             'ticket_id' => Str::uuid(), // Generate a unique ticket ID
         ]);

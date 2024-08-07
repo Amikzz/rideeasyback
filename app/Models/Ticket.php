@@ -20,6 +20,9 @@ class Ticket extends Model
         'date',
         'departure_time',
         'status',
-        'ticket_id'
+        'ticket_id',
+        'no_of_adults',
+        'no_of_children',
+        'amount',
     ];
 }
