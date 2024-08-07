@@ -227,37 +227,53 @@ class UserController extends Controller
             'no_of_children' => 'required|integer',
         ]);
 
-        //limit the number of tickets per person to 5 (both children and adults)
-        $ticketCount = Ticket::where('passenger_id', $request->passenger_id)->count();
-        if ($ticketCount >= 5) {
-            return response()->json(['error' => 'You have reached the maximum number of tickets allowed.'], 400);
+        // Check if the total number of tickets is more than 10
+        $total_amount_of_tickets = $request->no_of_adults + $request->no_of_children;
+        if ($total_amount_of_tickets > 10){
+            return response()->json(['error' => 'You can\'t purchase more than tickets at a time.'], 400);
         }
 
-        // calculate the amount to be paid adult = 100 children = 50
-        $adultAmount = $request->no_of_adults * 100;
-        $childrenAmount = $request->no_of_children * 50;
-        $totalAmount = $adultAmount + $childrenAmount;
+        // Check if the total number of tickets per trip is more than 70
+        $no_of_tickets_database = DB::table('trip')
+            ->where('trip_id', $request->trip_id)
+            ->select('no_of_tickets');
 
-        // Create a new ticket with a unique ID
-        $ticket = Ticket::create([
-            'bus_license_plate_no' => $request->bus_license_plate_no,
-            'passenger_id' => $request->passenger_id,
-            'trip_id' => $request->trip_id,
-            'start_location' => $request->start_location,
-            'end_location' => $request->end_location,
-            'date' => $request->date,
-            'departure_time' => $request->departure_time,
-            'no_of_adults' => $request->no_of_adults,
-            'no_of_children' => $request->no_of_children,
-            'amount' => $totalAmount,
-            'status' => 'Booked',
-            'ticket_id' => Str::uuid(), // Generate a unique ticket ID
-        ]);
+        if ($no_of_tickets_database >= 70){
+            return response()->json(['error' => 'No more tickets available for this trip.'], 400);
+        }
+        else{
 
-        // Return ticket details including ticket ID
-        return response()->json([
-            'ticket' => $ticket,
-            'message' => 'Ticket booked successfully',]);
+            // calculate the amount to be paid adult = 100 children = 50
+            $adultAmount = $request->no_of_adults * 100;
+            $childrenAmount = $request->no_of_children * 50;
+            $totalAmount = $adultAmount + $childrenAmount;
+
+            // Create a new ticket with a unique ID
+            $ticket = Ticket::create([
+                'bus_license_plate_no' => $request->bus_license_plate_no,
+                'passenger_id' => $request->passenger_id,
+                'trip_id' => $request->trip_id,
+                'start_location' => $request->start_location,
+                'end_location' => $request->end_location,
+                'date' => $request->date,
+                'departure_time' => $request->departure_time,
+                'no_of_adults' => $request->no_of_adults,
+                'no_of_children' => $request->no_of_children,
+                'amount' => $totalAmount,
+                'status' => 'Booked',
+                'ticket_id' => Str::uuid(), // Generate a unique ticket ID
+            ]);
+
+            // Update the number of tickets available for the trip
+            DB::table('trip')
+                ->where('trip_id', $request->trip_id)
+                ->increment('no_of_tickets', 1);
+
+            // Return ticket details including ticket ID
+            return response()->json([
+                'ticket' => $ticket,
+                'message' => 'Ticket booked successfully',]);
+        }
     }
 
     //safety button

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('arrival_time');
             $table->string('status');
             $table->string('process');
+            $table->integer('no_of_tickets');
             $table->timestamps();
 
             // Foreign key constraint
