@@ -267,7 +267,7 @@ class UserController extends Controller
             // Update the number of tickets available for the trip
             DB::table('trip')
                 ->where('trip_id', $request->trip_id)
-                ->increment('no_of_tickets', 1);
+                ->increment('no_of_tickets', $total_amount_of_tickets);
 
             // Return ticket details including ticket ID
             return response()->json([
