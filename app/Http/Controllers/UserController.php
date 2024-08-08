@@ -233,48 +233,65 @@ class UserController extends Controller
             return response()->json(['error' => 'You can\'t purchase more than 10 tickets at a time.'], 400);
         }
 
-        // Check if the total number of tickets per trip is more than 70
+        //check if the same passenger has already booked a ticket for the same trip and limit the times a person can book a ticket to 3
+        $ticket_count = DB::table('tickets')
+            ->where('passenger_id', $request->passenger_id)
+            ->where('trip_id', $request->trip_id)
+            ->count();
+
+        if ($ticket_count >= 3){
+            return response()->json(['error' => 'You can\'t book more than 3 tickets for the same trip.'], 400);
+        }
+
+        // Get the current number of tickets available for the trip
         $no_of_tickets_database = DB::table('trip')
             ->where('trip_id', $request->trip_id)
-            ->select('no_of_tickets');
+            ->value('no_of_tickets'); // Retrieve the value directly
 
-        if ($no_of_tickets_database >= 70){
+        if ($no_of_tickets_database === null) {
+            return response()->json(['error' => 'Trip not found.'], 404);
+        }
+
+        // Check if the total number of tickets to be booked is more than the available tickets
+        $no_of_tickets_after = $no_of_tickets_database + $total_amount_of_tickets;
+
+        if ($no_of_tickets_after > 60) {
             return response()->json(['error' => 'No more tickets available for this trip.'], 400);
         }
-        else{
 
-            // calculate the amount to be paid adult = 100 children = 50
-            $adultAmount = $request->no_of_adults * 100;
-            $childrenAmount = $request->no_of_children * 50;
-            $totalAmount = $adultAmount + $childrenAmount;
+        // Calculate the amount to be paid adult = 100 children = 50
+        $adultAmount = $request->no_of_adults * 100;
+        $childrenAmount = $request->no_of_children * 50;
+        $totalAmount = $adultAmount + $childrenAmount;
 
-            // Create a new ticket with a unique ID
-            $ticket = Ticket::create([
-                'bus_license_plate_no' => $request->bus_license_plate_no,
-                'passenger_id' => $request->passenger_id,
-                'trip_id' => $request->trip_id,
-                'start_location' => $request->start_location,
-                'end_location' => $request->end_location,
-                'date' => $request->date,
-                'departure_time' => $request->departure_time,
-                'no_of_adults' => $request->no_of_adults,
-                'no_of_children' => $request->no_of_children,
-                'amount' => $totalAmount,
-                'status' => 'Booked',
-                'ticket_id' => Str::uuid(), // Generate a unique ticket ID
-            ]);
+        // Create a new ticket with a unique ID
+        $ticket = Ticket::create([
+            'bus_license_plate_no' => $request->bus_license_plate_no,
+            'passenger_id' => $request->passenger_id,
+            'trip_id' => $request->trip_id,
+            'start_location' => $request->start_location,
+            'end_location' => $request->end_location,
+            'date' => $request->date,
+            'departure_time' => $request->departure_time,
+            'no_of_adults' => $request->no_of_adults,
+            'no_of_children' => $request->no_of_children,
+            'amount' => $totalAmount,
+            'status' => 'Booked',
+            'ticket_id' => Str::uuid(), // Generate a unique ticket ID
+        ]);
 
-            // Update the number of tickets available for the trip
-            DB::table('trip')
-                ->where('trip_id', $request->trip_id)
-                ->increment('no_of_tickets', $total_amount_of_tickets);
+        // Update the number of tickets available for the trip
+        DB::table('trip')
+            ->where('trip_id', $request->trip_id)
+            ->increment('no_of_tickets', $total_amount_of_tickets); // Use decrement instead of increment
 
-            // Return ticket details including ticket ID
-            return response()->json([
-                'ticket' => $ticket,
-                'message' => 'Ticket booked successfully',]);
-        }
+        // Return ticket details including ticket ID
+        return response()->json([
+            'ticket' => $ticket,
+            'message' => 'Ticket booked successfully',
+        ]);
     }
+
 
     //safety button
     public  function safetyButton(Request $request)
