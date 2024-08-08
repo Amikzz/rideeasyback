@@ -198,14 +198,22 @@ class UserController extends Controller
                     'route.end_location',
                     'schedule.date',
                     'trip.departure_time',
-                    'trip.arrival_time'
+                    'trip.arrival_time',
+                    'trip.no_of_tickets',
+                    'trip.status'
                 )
                 ->where('route.start_location', $startLocation)
                 ->where('route.end_location', $endLocation)
                 ->whereDate('schedule.date', $date);
 
             $trips = $query->get();
-            return response()->json($trips)->setStatusCode(200);
+
+            if($trips){
+                return response()->json($trips)->setStatusCode(200);
+            }
+            else{
+                return response()->json(['error' => 'No buses found.'], 404);
+            }
         }catch(\Exception $e){
             return response()->json(['error' => 'No buses found.'], 404);
         }
