@@ -173,6 +173,7 @@ class UserController extends Controller
         return response()->json(['status' => 'Support request submitted successfully']);
     }
 
+
     //search bus and date and time
     public function searchBus(Request $request)
     {
@@ -186,7 +187,18 @@ class UserController extends Controller
         $startLocation = $request->start_location;
         $endLocation = $request->end_location;
 
-        try{
+        try {
+            // Determine the status based on start and end locations
+            $status = '';
+            if ($startLocation == 'Colombo Fort' && $endLocation == 'Kottawa') {
+                $status = 'Up';
+            } elseif ($startLocation == 'Kottawa' && $endLocation == 'Colombo Fort') {
+                $status = 'Down';
+            } else {
+                return response()->json(['error' => 'Invalid start or end location.'], 400);
+            }
+
+            // Query to get all trips with the given status and date
             $query = DB::table('trip')
                 ->join('busdriverconductor', 'trip.bus_with_driver_conductor_id', '=', 'busdriverconductor.bus_with_driver_conductor')
                 ->join('schedule', 'trip.schedule_id', '=', 'schedule.schedule_id')
@@ -202,22 +214,37 @@ class UserController extends Controller
                     'trip.no_of_tickets',
                     'trip.status'
                 )
-                ->where('route.start_location', $startLocation)
-                ->where('route.end_location', $endLocation)
-                ->whereDate('schedule.date', $date);
+                ->where('trip.no_of_tickets', '<', 60)
+                ->whereDate('schedule.date', $date)
+                ->where('trip.status', $status);
 
             $trips = $query->get();
 
-            if($trips){
+            // Transform the result set to adjust the start and end locations based on the status
+            $trips->transform(function ($trip) use ($startLocation, $endLocation) {
+                // Swap the start and end locations based on the trip status
+                if ($trip->status === 'Down') {
+                    $trip->start_location = $startLocation;
+                    $trip->end_location = $endLocation;
+                } else {
+                    // Ensure that the locations are as expected for 'Up' status
+                    $trip->start_location = $startLocation;
+                    $trip->end_location = $endLocation;
+                }
+                return $trip;
+            });
+
+            if ($trips->isNotEmpty()) {
                 return response()->json($trips)->setStatusCode(200);
-            }
-            else{
+            } else {
                 return response()->json(['error' => 'No buses found.'], 404);
             }
-        }catch(\Exception $e){
-            return response()->json(['error' => 'No buses found.'], 404);
+        } catch (\Exception $e) {
+            \Log::error('Error: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while searching for buses.'], 500);
         }
     }
+
 
     //book ticket
     public function bookTicket(Request $request)
