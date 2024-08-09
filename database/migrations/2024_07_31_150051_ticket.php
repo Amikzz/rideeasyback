@@ -12,12 +12,12 @@ return new class extends Migration
             $table->id();
             $table->string('bus_license_plate_no');
             $table->string('passenger_id');
+            $table->string('status')->default('pending');
             $table->string('trip_id');
             $table->string('start_location');
             $table->string('end_location');
             $table->date('date');
             $table->time('departure_time');
-            $table->string('status')->default('Booked');
             $table->string('ticket_id')->unique();
             $table->integer('no_of_adults');
             $table->integer('no_of_children');

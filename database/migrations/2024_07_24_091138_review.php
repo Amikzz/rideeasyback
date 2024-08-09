@@ -17,8 +17,12 @@ return new class extends Migration
             $table->string('bus_license_plate_no');
             $table->string('review');
             $table->timestamps();
+
+            // Foreign key constraint bus license plate no
+            $table->foreign('bus_license_plate_no')->references('bus_license_plate_no')->on('bus')->onDelete('cascade');
         });
     }
+
 
     /**
      * Reverse the migrations.
