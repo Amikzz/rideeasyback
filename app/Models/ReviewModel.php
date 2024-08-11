@@ -15,5 +15,6 @@ class ReviewModel extends Model
         'user_id',
         'bus_license_plate_no',
         'review',
+        'rating',
     ];
 }

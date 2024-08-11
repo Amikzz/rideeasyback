@@ -117,12 +117,14 @@ class UserController extends Controller
             'user_id' => 'required|string',
             'bus_license' => 'required|string',
             'review' => 'required|string',
+            'rating' => 'required|integer|between:1,5',
         ]);
 
         // Extract the validated data
         $user_id = $request->user_id;
         $busLicensePlate = $request->bus_license;
         $review = $request->review;
+        $rating = $request->rating;
 
         // Check if the bus exists
         $busExists = DB::table('bus')
@@ -139,6 +141,7 @@ class UserController extends Controller
             'user_id' => $user_id,
             'bus_license_plate_no' => $busLicensePlate,
             'review' => $review,
+            'rating' => $rating,
         ]);
 
         // Return a success response
