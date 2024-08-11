@@ -263,6 +263,7 @@ class UserController extends Controller
             'departure_time' => 'required|date_format:H:i:s',
             'no_of_adults' => 'required|integer',
             'no_of_children' => 'required|integer',
+            'total_fare' => 'required|integer',
         ]);
 
         // Check if the total number of tickets is more than 10

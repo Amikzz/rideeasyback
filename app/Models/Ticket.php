@@ -24,5 +24,6 @@ class Ticket extends Model
         'no_of_adults',
         'no_of_children',
         'amount',
+        'total_fare'
     ];
 }
