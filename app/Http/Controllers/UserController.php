@@ -353,60 +353,8 @@ class UserController extends Controller
 
 
 
-    //safety button
-    public  function safetyButton(Request $request)
-    {
-        $request->validate([
-            'id_number' => 'required|string',
-            'passenger_id' => 'required|string',
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-        ]);
-
-        try {
-            $id_number = $request->id_number;
-            $first_name = $request->first_name;
-            $last_name = $request->last_name;
-            $latitude = $request->latitude;
-            $longitude = $request->longitude;
-
-            // add these details to ane table called safety_button
-            DB::table('safety_button')->insert([
-                'id_number' => $id_number,
-                'first_name' => $first_name,
-                'last_name' => $last_name,
-                'latitude' => $latitude,
-                'longitude' => $longitude,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-
-
-//            // Send SMS alert using Twilio
-//            $sid = env('TWILIO_SID');
-//            $token = env('TWILIO_AUTH_TOKEN');
-//            $twilioNumber = env('TWILIO_PHONE_NUMBER');
-//            $client = new Client($sid, $token);
-//
-//            $client->messages->create(
-//                '+18777804236', // Emergency contact number
-//                [
-//                    'from' => $twilioNumber,
-//                    'body' => "Emergency Alert: User $first_name $last_name with ID number $id_number has pressed the safety button. Location: Latitude $latitude, Longitude $longitude."
-//                ]
-//            );
-
-
-            return response()->json(['status' => 'Safety button pressed successfully']);
-        }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    //safety button test
-//    public function safetyButton(Request $request)
+//    //safety button
+//    public  function safetyButton(Request $request)
 //    {
 //        $request->validate([
 //            'id_number' => 'required|string',
@@ -419,55 +367,107 @@ class UserController extends Controller
 //
 //        try {
 //            $id_number = $request->id_number;
-//            $passenger_id = $request->passenger_id;
 //            $first_name = $request->first_name;
 //            $last_name = $request->last_name;
 //            $latitude = $request->latitude;
 //            $longitude = $request->longitude;
 //
-//            //Get the current date
-//            //$currentDate = Carbon::now()->format('Y-m-d');
-//            $currentDate = '2024-07-18';
+//            // add these details to ane table called safety_button
+//            DB::table('safety_button')->insert([
+//                'id_number' => $id_number,
+//                'first_name' => $first_name,
+//                'last_name' => $last_name,
+//                'latitude' => $latitude,
+//                'longitude' => $longitude,
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now(),
+//            ]);
 //
 //
-//            // Get the current time
-//            //$currentTime = Carbon::now();
-//            $currentTime = '11:18:00';
+////            // Send SMS alert using Twilio
+////            $sid = env('TWILIO_SID');
+////            $token = env('TWILIO_AUTH_TOKEN');
+////            $twilioNumber = env('TWILIO_PHONE_NUMBER');
+////            $client = new Client($sid, $token);
+////
+////            $client->messages->create(
+////                '+18777804236', // Emergency contact number
+////                [
+////                    'from' => $twilioNumber,
+////                    'body' => "Emergency Alert: User $first_name $last_name with ID number $id_number has pressed the safety button. Location: Latitude $latitude, Longitude $longitude."
+////                ]
+////            );
 //
-//            // Fetch the ticket for the given passenger_id
-//            $ticket = DB::table('tickets')
-//                ->where('passenger_id', $passenger_id)
-//                ->whereDate('date', $currentDate)
-//                ->whereDate('status', 'Active')
-//                ->first();
 //
-//            if ($ticket) {
-//                $departureTime = Carbon::parse($ticket->departure_time);
-//                $arrivalTime = $departureTime->copy()->addHours(2);
-//
-//                // Check if current time is between departure and arrival time
-//                if ($currentTime->between($departureTime, $arrivalTime)) {
-//                    // Insert the safety button data into the safety_button table
-//                    DB::table('safety_button')->insert([
-//                        'id_number' => $id_number,
-//                        'passenger_id' => $passenger_id, // Assuming you also want to store passenger_id
-//                        'first_name' => $first_name,
-//                        'last_name' => $last_name,
-//                        'latitude' => $latitude,
-//                        'longitude' => $longitude,
-//                        'created_at' => Carbon::now(),
-//                        'updated_at' => Carbon::now(),
-//                    ]);
-//
-//                    return response()->json(['status' => 'Safety button pressed successfully']);
-//                } else {
-//                    return response()->json(['error' => 'Safety button cannot be pressed outside of the valid time window'], 403);
-//                }
-//            } else {
-//                return response()->json(['error' => 'No valid ticket found for the user'], 404);
-//            }
-//        } catch (\Exception $e) {
+//            return response()->json(['status' => 'Safety button pressed successfully']);
+//        }catch (\Exception $e){
 //            return response()->json(['error' => $e->getMessage()], 500);
 //        }
 //    }
+
+    //safety button test
+    public function safetyButton(Request $request)
+    {
+        $request->validate([
+            'id_number' => 'required|string',
+            'passenger_id' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        try {
+            $id_number = $request->id_number;
+            $passenger_id = $request->passenger_id;
+            $first_name = $request->first_name;
+            $last_name = $request->last_name;
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            //Get the current date
+            //$currentDate = Carbon::now()->format('Y-m-d');
+            $currentDate = '2024-07-18';
+
+
+            // Get the current time
+            //$currentTime = Carbon::now();
+            $currentTime = '13:18:00';
+            $currentTime = Carbon::parse($currentTime);
+
+            // Fetch the ticket for the given passenger_id
+            $ticket = DB::table('tickets')
+                ->where('passenger_id', $passenger_id)
+                ->whereDate('date', $currentDate)
+                ->where('status', 'Active')
+                ->first();
+
+            if ($ticket) {
+                $departureTime = Carbon::parse($ticket->departure_time);
+                $arrivalTime = $departureTime->copy()->addHours(2);
+
+                // Check if current time is between departure and arrival time
+                if ($currentTime->between($departureTime, $arrivalTime)) {
+                    // Insert the safety button data into the safety_button table
+                    DB::table('safety_button')->insert([
+                        'id_number' => $id_number,
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'latitude' => $latitude,
+                        'longitude' => $longitude,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
+
+                    return response()->json(['status' => 'Safety button pressed successfully']);
+                } else {
+                    return response()->json(['error' => 'Safety button cannot be pressed outside of the valid time window'], 403);
+                }
+            } else {
+                return response()->json(['error' => 'No valid ticket found for the user'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }
