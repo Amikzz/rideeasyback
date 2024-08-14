@@ -331,12 +331,34 @@ class UserController extends Controller
         ]);
     }
 
+//    public function getTicketDetails(Request $request)
+//    {
+//        $userId = $request->query('userId');
+//        $date = $request->query('date');
+//
+//        // Adjust your query to fetch tickets for the specific user and date
+//        $ticket = Ticket::where('passenger_id', $userId)
+//            ->whereDate('date', $date)
+//            ->where('status', 'Active')
+//            ->first();
+//
+//        if ($ticket) {
+//            return response()->json([
+//                'departure_time' => $ticket->departure_time,
+//            ]);
+//        } else {
+//            return response()->json(['message' => 'No active ticket found'], 404);
+//        }
+//    }
+
+
 
     //safety button
     public  function safetyButton(Request $request)
     {
         $request->validate([
             'id_number' => 'required|string',
+            'passenger_id' => 'required|string',
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'latitude' => 'required|numeric',
@@ -382,4 +404,70 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    //safety button test
+//    public function safetyButton(Request $request)
+//    {
+//        $request->validate([
+//            'id_number' => 'required|string',
+//            'passenger_id' => 'required|string',
+//            'first_name' => 'required|string',
+//            'last_name' => 'required|string',
+//            'latitude' => 'required|numeric',
+//            'longitude' => 'required|numeric',
+//        ]);
+//
+//        try {
+//            $id_number = $request->id_number;
+//            $passenger_id = $request->passenger_id;
+//            $first_name = $request->first_name;
+//            $last_name = $request->last_name;
+//            $latitude = $request->latitude;
+//            $longitude = $request->longitude;
+//
+//            //Get the current date
+//            //$currentDate = Carbon::now()->format('Y-m-d');
+//            $currentDate = '2024-07-18';
+//
+//
+//            // Get the current time
+//            //$currentTime = Carbon::now();
+//            $currentTime = '11:18:00';
+//
+//            // Fetch the ticket for the given passenger_id
+//            $ticket = DB::table('tickets')
+//                ->where('passenger_id', $passenger_id)
+//                ->whereDate('date', $currentDate)
+//                ->whereDate('status', 'Active')
+//                ->first();
+//
+//            if ($ticket) {
+//                $departureTime = Carbon::parse($ticket->departure_time);
+//                $arrivalTime = $departureTime->copy()->addHours(2);
+//
+//                // Check if current time is between departure and arrival time
+//                if ($currentTime->between($departureTime, $arrivalTime)) {
+//                    // Insert the safety button data into the safety_button table
+//                    DB::table('safety_button')->insert([
+//                        'id_number' => $id_number,
+//                        'passenger_id' => $passenger_id, // Assuming you also want to store passenger_id
+//                        'first_name' => $first_name,
+//                        'last_name' => $last_name,
+//                        'latitude' => $latitude,
+//                        'longitude' => $longitude,
+//                        'created_at' => Carbon::now(),
+//                        'updated_at' => Carbon::now(),
+//                    ]);
+//
+//                    return response()->json(['status' => 'Safety button pressed successfully']);
+//                } else {
+//                    return response()->json(['error' => 'Safety button cannot be pressed outside of the valid time window'], 403);
+//                }
+//            } else {
+//                return response()->json(['error' => 'No valid ticket found for the user'], 404);
+//            }
+//        } catch (\Exception $e) {
+//            return response()->json(['error' => $e->getMessage()], 500);
+//        }
+//    }
 }
