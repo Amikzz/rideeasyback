@@ -408,11 +408,12 @@ class UserController extends Controller
             //Get the current date
             //$currentDate = Carbon::now()->format('Y-m-d');
             $currentDate = '2024-07-18';
+            $currentDate = Carbon::parse($currentDate);
 
 
             // Get the current time
             //$currentTime = Carbon::now();
-            $currentTime = '13:18:00';
+            $currentTime = '11:18:00';
             $currentTime = Carbon::parse($currentTime);
 
             // Fetch the ticket for the given passenger_id
