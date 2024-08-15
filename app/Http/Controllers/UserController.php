@@ -331,26 +331,6 @@ class UserController extends Controller
         ]);
     }
 
-//    public function getTicketDetails(Request $request)
-//    {
-//        $userId = $request->query('userId');
-//        $date = $request->query('date');
-//
-//        // Adjust your query to fetch tickets for the specific user and date
-//        $ticket = Ticket::where('passenger_id', $userId)
-//            ->whereDate('date', $date)
-//            ->where('status', 'Active')
-//            ->first();
-//
-//        if ($ticket) {
-//            return response()->json([
-//                'departure_time' => $ticket->departure_time,
-//            ]);
-//        } else {
-//            return response()->json(['message' => 'No active ticket found'], 404);
-//        }
-//    }
-
 
 
 //    //safety button
