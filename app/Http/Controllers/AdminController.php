@@ -65,7 +65,7 @@ class AdminController extends Controller
         Validator::validate($request->all(), [
             'conductor_id' => ['required', 'string'],
             'conductor_name' => ['required', 'string'],
-            'email' => ['required', 'string'],
+            'email' => ['required', 'string', 'email', 'unique:users'],
             'password' => ['required', 'string']
         ]);
 
