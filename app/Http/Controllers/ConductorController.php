@@ -163,19 +163,47 @@ class ConductorController extends Controller
         return view('deleteride', compact('departureTimes'));
     }
 
+//    public function deleteRide(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
+//    {
+//        try {
+//
+//            DB::table('trip')->where('trip_id', $trip_id)->delete();
+//
+//            return redirect()->route('viewtrips')->with('success', 'Ride deleted successfully');
+//        }
+//        catch (\Exception $e) {
+//            Log::error('Error deleting ride: ' . $e->getMessage());
+//            return redirect()->route('viewtrips')->with('error', 'Failed to delete the ride.');
+//        }
+//    }
+
     public function deleteRide(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
     {
         try {
+            // Validate the trip_id and retrieve the trip details
+            $trip = DB::table('trip')->where('trip_id', $trip_id)->first();
+            if (!$trip) {
+                return redirect()->route('viewtrips')->with('error', 'Ride not found.');
+            }
 
+            // Check if the current time is within one hour of the departure time
+            $currentTime = now();
+            $departureTime = Carbon::parse($trip->departure_time);
+
+            if ($departureTime->diffInMinutes($currentTime, false) <= 60) {
+                return redirect()->route('viewtrips')->with('error', 'Cannot delete the ride within one hour of departure.');
+            }
+
+            // Delete the trip
             DB::table('trip')->where('trip_id', $trip_id)->delete();
 
             return redirect()->route('viewtrips')->with('success', 'Ride deleted successfully');
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error deleting ride: ' . $e->getMessage());
             return redirect()->route('viewtrips')->with('error', 'Failed to delete the ride.');
         }
     }
+
 
     public function showSupportForm(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application{
         return view('supportforconductors');
