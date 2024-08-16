@@ -187,7 +187,9 @@ class ConductorController extends Controller
             }
 
             // Check if the current time is within one hour of the departure time
-            $currentTime = now();
+//            $currentTime = '21:18:00';
+//            $currentTime = Carbon::parse($currentTime);
+            $currentTime = Carbon::now();
             $departureTime = Carbon::parse($trip->departure_time);
 
             if ($departureTime->diffInMinutes($currentTime, false) <= 60) {
