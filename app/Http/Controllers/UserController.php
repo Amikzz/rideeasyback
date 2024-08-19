@@ -440,6 +440,20 @@ class UserController extends Controller
                         'updated_at' => Carbon::now(),
                     ]);
 
+                    // Send SMS alert using Twilio
+                    $sid = env('TWILIO_SID');
+                    $token = env('TWILIO_AUTH_TOKEN');
+                    $twilioNumber = env('TWILIO_PHONE_NUMBER');
+                    $client = new Client($sid, $token);
+
+                    $client->messages->create(
+                        '+18777804236', // Emergency contact number
+                        [
+                            'from' => $twilioNumber,
+                            'body' => "Emergency Alert: User $first_name $last_name with ID number $id_number has pressed the safety button. Location: Latitude $latitude, Longitude $longitude."
+                        ]
+                    );
+
                     return response()->json(['status' => 'Safety button pressed successfully']);
                 } else {
                     return response()->json(['error' => 'Safety button cannot be pressed outside of the valid time window'], 403);
