@@ -54,6 +54,7 @@
                                     <th class="px-4 py-2">Bus License Plate Number</th>
                                     <th class="px-4 py-2">Capacity</th>
                                     <th class="px-4 py-2">Status</th>
+                                    <th class="px-4 py-2">Last Maintenance</th>
                                     <th class="px-4 py-2">Action</th>
                                 </tr>
                                 </thead>
@@ -71,6 +72,7 @@
                                                 <span class="text-yellow-500">{{ $bus->status }}</span>
                                             @endif
                                         </td>
+                                        <td class="border px-4 py-2">{{ \Carbon\Carbon::parse($bus->lastMaintain)->format('Y-m-d') }}</td>
                                         <td class="border px-4 py-2">
                                             @if($bus->status === 'Active')
                                                 <form method="POST" action="{{ route('inactivatebus.post', $bus->bus_license_plate_no) }}">
