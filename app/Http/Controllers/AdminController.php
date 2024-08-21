@@ -38,6 +38,9 @@ class AdminController extends Controller
         Validator::validate($request->all(), [
             'bus_license_plate_no' => ['required', 'string', 'max:255'],
             'capacity' => ['required', 'integer'],
+            'route_id' => ['required', 'string', 'exists:route,route_id'],
+            'bus_parked_venue' => ['required', 'string'],
+            'bus_type' => ['required', 'string']
         ]);
 
         try {
@@ -46,6 +49,9 @@ class AdminController extends Controller
                 'capacity' => $request->capacity,
                 'status' => 'Active',
                 'lastUpdateLocation' => now(),
+                'route_id' => $request->route_id,
+                'bus_parked_venue' => $request->bus_parked_venue,
+                'bus_type' => $request->bus_type
             ]);
 
             return redirect()->route('addbus')->with('success', 'Bus added successfully');

@@ -61,7 +61,7 @@
                                                     <form method="POST" action="{{ route('viewsupportrequests.post', $supportRequest->id) }}">
                                                         @csrf
                                                         <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                            {{ __('Issue Attended') }}
+                                                            {{ __('Issue Pending') }}
                                                         </x-button>
                                                     </form>
                                                 @elseif($supportRequest->status === 'done')
@@ -96,7 +96,7 @@
                                         <form method="POST" action="{{ route('viewsupportrequests.post', $supportRequest->id) }}">
                                             @csrf
                                             <x-button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                {{ __('Issue Attended') }}
+                                                {{ __('Issue Pending') }}
                                             </x-button>
                                         </form>
                                     @endif
@@ -105,6 +105,9 @@
                         </div>
                     @endif
                 </div>
+                <center>
+                <span class="p-4 text-lg">If you have completed and solved the issue, press the button <b>Issue Pending</b> and make the issue Completed.</span>
+                </center>
             </div>
         </div>
     </div>

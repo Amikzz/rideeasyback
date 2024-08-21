@@ -18,6 +18,9 @@ class Bus extends Model
         'latitude',
         'longitude',
         'lastUpdateLocation',
+        'route_id',
+        'bus_parked_venue',
+        'bus_type',
     ];
 
     protected $casts = [

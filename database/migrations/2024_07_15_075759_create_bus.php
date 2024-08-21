@@ -15,6 +15,10 @@ return new class extends Migration
             $table->string('bus_license_plate_no')->primary();
             $table->integer('capacity');
             $table->string('status');
+            $table->string('route_id')->nullable();
+            $table->foreign('route_id')->references('route_id')->on('route');
+            $table->string('bus_parked_venue')->nullable();
+            $table->string('bus_type')->nullable();
             $table->timestamps();
             $table->decimal('latitude')->nullable();
             $table->decimal('longitude')->nullable();

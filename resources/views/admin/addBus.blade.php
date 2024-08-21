@@ -43,6 +43,29 @@
                             </div>
                             <br>
 
+                            <div>
+                                <x-label for="route_id" value="{{ __('Route ID') }}" />
+                                <x-input id="route_id" class="block mt-1 w-full" type="text" name="route_id" :value="old('route_id')" required autofocus autocomplete="route_id" />
+                            </div>
+                            <br>
+
+                            <div>
+                                <x-label for="bus_parked_venue" value="{{ __('Bus Parked Location') }}" />
+                                <x-input id="bus_parked_venue" class="block mt-1 w-full" type="text" name="bus_parked_venue" :value="old('bus_parked_venue')" required autofocus autocomplete="bus_parked_venue" />
+                            </div>
+                            <br>
+
+                            <div>
+                                <x-label for="bus_type" value="{{ __('Bus Type') }}" />
+                                <select id="bus_type" name="bus_type" class="block mt-1 w-full" required>
+                                    <option value="AC">AC</option>
+                                    <option value="Non-AC">Non-AC</option>
+                                </select>
+                            </div>
+
+
+                            <br>
+
                             <x-button class="ms-1">
                                 {{ __('Add') }}
                             </x-button>
