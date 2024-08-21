@@ -186,6 +186,16 @@ class AdminController extends Controller
                 ->where('bus_license_plate_no', $bus_license_plate_no)
                 ->update(['status' => 'Inactive']);
 
+            //add the bus to the busmaintain table
+            DB::table('busmaintain')
+                ->insert([
+                    'bus_license_plate_no' => $bus_license_plate_no,
+                    'status' => 'Under maintenance',
+                    'date_in' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+
             return redirect()->route('viewbuses')->with('success', 'Bus inactivated successfully');
         } catch (\Exception $e) {
             return redirect()->route('viewbuses')->with('error', 'An error occurred while inactivating bus');
@@ -199,6 +209,11 @@ class AdminController extends Controller
             DB::table('bus')
                 ->where('bus_license_plate_no', $bus_license_plate_no)
                 ->update(['status' => 'Active']);
+
+            //remove the bus from the busmaintain table
+            DB::table('busmaintain')
+                ->where('bus_license_plate_no', $bus_license_plate_no)
+                ->delete();
 
             return redirect()->route('viewbuses')->with('success', 'Bus activated successfully');
         } catch (\Exception $e) {

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('route_id')->references('route_id')->on('route');
             $table->string('bus_parked_venue')->nullable();
             $table->string('bus_type')->nullable();
+            $table->dateTime('lastMaintain')->nullable();
             $table->timestamps();
             $table->decimal('latitude')->nullable();
             $table->decimal('longitude')->nullable();
