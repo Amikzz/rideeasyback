@@ -184,7 +184,10 @@ class AdminController extends Controller
         try {
             DB::table('bus')
                 ->where('bus_license_plate_no', $bus_license_plate_no)
-                ->update(['status' => 'Inactive']);
+                ->update([
+                    'lastMaintain' => now(),
+                    'status' => 'Inactive'
+                ]);
 
             //add the bus to the busmaintain table
             DB::table('busmaintain')
