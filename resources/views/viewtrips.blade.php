@@ -178,6 +178,7 @@
                         </div>
                     @endif
                 </div>
+                <span class="p-4 text-lg"> <b>Note:</b> You can't delete a ride within 1 hour of the departure. If the trip needs to be deleted, delete before the 1 hour time mark.</span>
             </div>
         </div>
     </div>
