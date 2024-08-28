@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('latitude');
             $table->string('longitude');
+            $table->string('issue_type');
             $table->timestamps();
         });
     }
