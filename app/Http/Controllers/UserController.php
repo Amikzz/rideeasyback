@@ -468,4 +468,45 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    // Seat availability
+    public function seatAvailability(Request $request)
+    {
+        // Validate the input
+        $request->validate([
+            'trip_id' => 'required|string',
+        ]);
+
+        // Get the seat numbers that have been booked for the specified trip_id
+        $booked_seats = DB::table('tickets')
+            ->where('trip_id', $request->trip_id)
+            ->pluck('seat_number');
+
+        // Return the booked seat numbers as a JSON response
+        return response()->json([
+            'booked_seats' => $booked_seats,
+        ]);
+    }
+
+
+    //seat reservation
+    public function seatReservation(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'bus_license_plate_no' => 'required|exists:bus,bus_license_plate_no',
+            'passenger_id' => 'required|string',
+            'trip_id' => 'required|string',
+            'start_location' => 'required|string',
+            'end_location' => 'required|string',
+            'date' => 'required|date',
+            'departure_time' => 'required|date_format:H:i:s',
+            'no_of_adults' => 'required|integer',
+            'no_of_children' => 'required|integer',
+            'seat_numbers' => 'required|json',
+            'total_fare' => 'required|integer',
+        ]);
+
+
+    }
 }
