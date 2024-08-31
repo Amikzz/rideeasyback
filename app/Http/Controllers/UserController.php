@@ -488,7 +488,7 @@ class UserController extends Controller
         ]);
     }
 
-
+    // Seat reservation
     public function seatReservation(Request $request)
     {
         // Validate input
@@ -503,11 +503,16 @@ class UserController extends Controller
             'no_of_adults' => 'required|integer',
             'no_of_children' => 'required|integer',
             'seat_numbers' => 'required|json', // Seat numbers passed as JSON
-            'total_fare' => 'required|integer',
         ]);
 
         // Decode seat numbers from JSON to an array
         $seatNumbers = json_decode($request->seat_numbers, true);
+
+        // Calculate the fare for adults and children
+        // Adult fare = 200, Child fare = 100
+        $adultFare = $request->no_of_adults * 200;
+        $childFare = $request->no_of_children * 100;
+        $amount = $adultFare + $childFare;
 
         // Iterate over each seat number and create a ticket
         foreach ($seatNumbers as $seatNumber) {
@@ -524,7 +529,7 @@ class UserController extends Controller
                 'departure_time' => $request->departure_time,
                 'no_of_adults' => $request->no_of_adults,
                 'no_of_children' => $request->no_of_children,
-                'amount' => $request->total_fare / count($seatNumbers), // Split fare among seats
+                'amount' => $amount / count($seatNumbers),
                 'status' => 'Booked',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -536,7 +541,7 @@ class UserController extends Controller
             ->where('trip_id', $request->trip_id)
             ->increment('no_of_tickets', count($seatNumbers));
 
-        // Get the booked tickets
+        //create a json of ticket details
         $bookedTickets = DB::table('tickets')
             ->where('trip_id', $request->trip_id)
             ->whereIn('seat_number', $seatNumbers)
@@ -548,5 +553,4 @@ class UserController extends Controller
             'booked_tickets' => $bookedTickets,
         ]);
     }
-
 }
