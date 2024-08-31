@@ -472,85 +472,140 @@ class UserController extends Controller
     // Seat availability
     public function seatAvailability(Request $request)
     {
-        // Validate the input
-        $request->validate([
-            'trip_id' => 'required|string|exists:trip,trip_id',
-        ]);
+        try {
+            // Validate the input
+            $request->validate([
+                'trip_id' => 'required|string|exists:trip,trip_id',
+            ]);
 
-        // Get the seat numbers that have been booked for the specified trip_id
-        $booked_seats = DB::table('tickets')
-            ->where('trip_id', $request->trip_id)
-            ->pluck('seat_number');
+            // Get the seat numbers that have been booked for the specified trip_id
+            $booked_seats = DB::table('tickets')
+                ->where('trip_id', $request->trip_id)
+                ->pluck('seat_number');
 
-        // Return the booked seat numbers as a JSON response
-        return response()->json([
-            'booked_seats' => $booked_seats,
-        ]);
+            // Check if any seats were booked for the trip
+            if ($booked_seats->isEmpty()) {
+                return response()->json([
+                    'message' => 'No seats have been booked for this trip.',
+                    'booked_seats' => [],
+                ], 200);
+            }
+
+            // Return the booked seat numbers as a JSON response
+            return response()->json([
+                'booked_seats' => $booked_seats,
+            ], 200);
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Handle database-related exceptions
+            return response()->json([
+                'error' => 'Database error: ' . $e->getMessage(),
+            ], 500);
+        } catch (\Exception $e) {
+            // Handle general exceptions
+            return response()->json([
+                'error' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     // Seat reservation
     public function seatReservation(Request $request)
     {
-        // Validate input
-        $request->validate([
-            'bus_license_plate_no' => 'required|exists:bus,bus_license_plate_no',
-            'passenger_id' => 'required|string',
-            'trip_id' => 'required|string',
-            'start_location' => 'required|string',
-            'end_location' => 'required|string',
-            'date' => 'required|date',
-            'departure_time' => 'required|date_format:H:i:s',
-            'no_of_adults' => 'required|integer',
-            'no_of_children' => 'required|integer',
-            'seat_numbers' => 'required|json', // Seat numbers passed as JSON
-        ]);
-
-        // Decode seat numbers from JSON to an array
-        $seatNumbers = json_decode($request->seat_numbers, true);
-
-        // Calculate the fare for adults and children
-        // Adult fare = 200, Child fare = 100
-        $adultFare = $request->no_of_adults * 200;
-        $childFare = $request->no_of_children * 100;
-        $amount = $adultFare + $childFare;
-
-        // Iterate over each seat number and create a ticket
-        foreach ($seatNumbers as $seatNumber) {
-            // Create a ticket record for each seat
-            $ticket = DB::table('tickets')->insertGetId([
-                'ticket_id' => Str::uuid(),
-                'bus_license_plate_no' => $request->bus_license_plate_no,
-                'passenger_id' => $request->passenger_id,
-                'trip_id' => $request->trip_id,
-                'seat_number' => $seatNumber,
-                'start_location' => $request->start_location,
-                'end_location' => $request->end_location,
-                'date' => $request->date,
-                'departure_time' => $request->departure_time,
-                'no_of_adults' => $request->no_of_adults,
-                'no_of_children' => $request->no_of_children,
-                'amount' => $amount / count($seatNumbers),
-                'status' => 'Booked',
-                'created_at' => now(),
-                'updated_at' => now(),
+        try {
+            // Validate input
+            $request->validate([
+                'bus_license_plate_no' => 'required|exists:bus,bus_license_plate_no',
+                'passenger_id' => 'required|string',
+                'trip_id' => 'required|string|exists:trip,trip_id',
+                'start_location' => 'required|string',
+                'end_location' => 'required|string',
+                'date' => 'required|date',
+                'departure_time' => 'required|date_format:H:i:s',
+                'no_of_adults' => 'required|integer|min:0',
+                'no_of_children' => 'required|integer|min:0',
+                'seat_numbers' => 'required|json', // Seat numbers passed as JSON
             ]);
+
+            // Decode seat numbers from JSON to an array
+            $seatNumbers = json_decode($request->seat_numbers, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json([
+                    'error' => 'Invalid JSON format for seat numbers.',
+                ], 400);
+            }
+
+            // Calculate the fare for adults and children
+            $adultFare = $request->no_of_adults * 200;
+            $childFare = $request->no_of_children * 100;
+            $amount = $adultFare + $childFare;
+
+            // Start a database transaction
+            DB::beginTransaction();
+
+            // Iterate over each seat number and create a ticket
+            foreach ($seatNumbers as $seatNumber) {
+                // Create a ticket record for each seat
+                DB::table('tickets')->insert([
+                    'ticket_id' => (string) Str::uuid(),
+                    'bus_license_plate_no' => $request->bus_license_plate_no,
+                    'passenger_id' => $request->passenger_id,
+                    'trip_id' => $request->trip_id,
+                    'seat_number' => $seatNumber,
+                    'start_location' => $request->start_location,
+                    'end_location' => $request->end_location,
+                    'date' => $request->date,
+                    'departure_time' => $request->departure_time,
+                    'no_of_adults' => $request->no_of_adults,
+                    'no_of_children' => $request->no_of_children,
+                    'amount' => $amount / count($seatNumbers),
+                    'status' => 'Booked',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            // Update the number of tickets available for the trip
+            DB::table('trip')
+                ->where('trip_id', $request->trip_id)
+                ->increment('no_of_tickets', count($seatNumbers));
+
+            // Commit the transaction
+            DB::commit();
+
+            // Create a JSON of booked ticket details
+            $bookedTickets = DB::table('tickets')
+                ->where('trip_id', $request->trip_id)
+                ->whereIn('seat_number', $seatNumbers)
+                ->get();
+
+            // Return the booked tickets as JSON
+            return response()->json([
+                'message' => 'Seats successfully booked',
+                'booked_tickets' => $bookedTickets,
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation exceptions
+            return response()->json([
+                'error' => 'Validation error: ' . $e->getMessage(),
+            ], 422);
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Handle database-related exceptions
+            DB::rollBack(); // Rollback the transaction in case of error
+            return response()->json([
+                'error' => 'Database error: ' . $e->getMessage(),
+            ], 500);
+
+        } catch (\Exception $e) {
+            // Handle general exceptions
+            DB::rollBack(); // Rollback the transaction in case of error
+            return response()->json([
+                'error' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
         }
-
-        // Update the number of tickets available for the trip
-        DB::table('trip')
-            ->where('trip_id', $request->trip_id)
-            ->increment('no_of_tickets', count($seatNumbers));
-
-        //create a json of ticket details
-        $bookedTickets = DB::table('tickets')
-            ->where('trip_id', $request->trip_id)
-            ->whereIn('seat_number', $seatNumbers)
-            ->get();
-
-        // Return the booked tickets as JSON
-        return response()->json([
-            'message' => 'Seats successfully booked',
-            'booked_tickets' => $bookedTickets,
-        ]);
     }
 }
