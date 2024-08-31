@@ -25,6 +25,8 @@ Route::middleware([
     Route::post('/dashboard/viewtrips/{trip_id}/end', [App\Http\Controllers\ConductorController::class, 'endTrip'])->name('endtrip.post');
     Route::get('/dashboard/support', [App\Http\Controllers\ConductorController::class, 'showSupportForm'])->name('support');
     Route::post('/dashboard/support', [App\Http\Controllers\ConductorController::class, 'conductorSupportController'])->name('support.post');
+    Route::get('/dashboard/validateticket', [App\Http\Controllers\ConductorController::class, 'showValidateTicketPage'])->name('validateticket');
+    Route::post('/dashboard/validateticket', [App\Http\Controllers\ConductorController::class, 'validateTicket'])->name('validateticket.post');
 
     //admin
     Route::get('/dashboard/addbus', [App\Http\Controllers\AdminController::class, 'addBusView'])->name('addbus');
@@ -52,6 +54,4 @@ Route::middleware([
     Route::get('/dashboard/viewsupportrequestsconductor', [App\Http\Controllers\AdminController::class, 'viewConductorSupportRequests'])->name('viewsupportrequestsconductor');
     Route::post('/dashboard/viewsupportrequestsconductor/{id}/attended', [App\Http\Controllers\AdminController::class, 'editConductorSupportRequests'])->name('viewsupportrequestsconductor.post');
     Route::get('/dashboard/viewreviews', [App\Http\Controllers\AdminController::class, 'viewUserReviews'])->name('viewUserReviews');
-    Route::get('/dashboard/validateticket', [App\Http\Controllers\ConductorController::class, 'showValidateTicketPage'])->name('validateticket');
-    Route::post('/dashboard/validateticket', [App\Http\Controllers\ConductorController::class, 'validateTicket'])->name('validateticket.post');
 });

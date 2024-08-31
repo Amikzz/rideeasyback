@@ -247,35 +247,53 @@ class ConductorController extends Controller
     // Validate ticket
     public function validateTicket(Request $request)
     {
+        // Validate input
         $request->validate([
             'id' => 'required|integer',
         ]);
+
+        DB::beginTransaction(); // Start a transaction
 
         try {
             // Retrieve the ticket based on the provided ID
             $ticket = DB::table('tickets')->where('id', $request->id)->first();
 
-            if ($ticket) {
-                // Check if the ticket is already active or booked
-                if ($ticket->status === 'Active') {
-                    // If ticket is already active, return an error message
-                    return redirect()->route('validateticket')->with('error', 'This ticket has already been used.');
-                } elseif ($ticket->status === 'Booked') {
-                    // If ticket is booked but not yet active, you might handle it differently if needed
-                    // Here we consider it as active
-                    DB::table('tickets')->where('id', $request->id)->update(['status' => 'Active']);
-                    session()->flash('ticket', $ticket);
-                    return redirect()->route('validateticket')->with('success', 'Ticket validated successfully');
-                } else {
-                    // Update the ticket status to active
-                    DB::table('tickets')->where('id', $request->id)->update(['status' => 'Active']);
-                    session()->flash('ticket', $ticket);
-                    return redirect()->route('validateticket')->with('success', 'Ticket validated successfully');
-                }
-            } else {
+            if (!$ticket) {
+                // Roll back the transaction if the ticket is not found
+                DB::rollBack();
                 return redirect()->route('validateticket')->with('error', 'Ticket not found');
             }
+
+            // Check if the ticket is already active or booked
+            if ($ticket->status === 'Active') {
+                // If ticket is already active, return an error message
+                DB::rollBack();
+                return redirect()->route('validateticket')->with('error', 'This ticket has already been used.');
+            } else {
+                // Update the ticket status to active
+                DB::table('tickets')->where('id', $request->id)->update(['status' => 'Active']);
+
+                // Update the number of validated tickets in the trip table
+                $tripUpdated = DB::table('trip')
+                    ->where('trip_id', $ticket->trip_id)
+                    ->increment('validated_tickets');
+
+                if (!$tripUpdated) {
+                    // If the trip update fails, roll back the transaction
+                    DB::rollBack();
+                    return redirect()->route('validateticket')->with('error', 'Failed to update trip information.');
+                }
+
+                // Commit the transaction
+                DB::commit();
+
+                // Flash the ticket details and success message
+                session()->flash('ticket', $ticket);
+                return redirect()->route('validateticket')->with('success', 'Ticket validated successfully');
+            }
         } catch (\Exception $e) {
+            // Roll back the transaction in case of error
+            DB::rollBack();
             Log::error('Error validating ticket: ' . $e->getMessage());
             return redirect()->route('validateticket')->with('error', 'Failed to validate ticket');
         }
