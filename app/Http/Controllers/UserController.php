@@ -474,7 +474,7 @@ class UserController extends Controller
     {
         // Validate the input
         $request->validate([
-            'trip_id' => 'required|string',
+            'trip_id' => 'required|string|exists:trip,trip_id',
         ]);
 
         // Get the seat numbers that have been booked for the specified trip_id
@@ -489,7 +489,6 @@ class UserController extends Controller
     }
 
 
-    //seat reservation
     public function seatReservation(Request $request)
     {
         // Validate input
@@ -503,10 +502,51 @@ class UserController extends Controller
             'departure_time' => 'required|date_format:H:i:s',
             'no_of_adults' => 'required|integer',
             'no_of_children' => 'required|integer',
-            'seat_numbers' => 'required|json',
+            'seat_numbers' => 'required|json', // Seat numbers passed as JSON
             'total_fare' => 'required|integer',
         ]);
 
+        // Decode seat numbers from JSON to an array
+        $seatNumbers = json_decode($request->seat_numbers, true);
 
+        // Iterate over each seat number and create a ticket
+        foreach ($seatNumbers as $seatNumber) {
+            // Create a ticket record for each seat
+            $ticket = DB::table('tickets')->insertGetId([
+                'ticket_id' => Str::uuid(),
+                'bus_license_plate_no' => $request->bus_license_plate_no,
+                'passenger_id' => $request->passenger_id,
+                'trip_id' => $request->trip_id,
+                'seat_number' => $seatNumber,
+                'start_location' => $request->start_location,
+                'end_location' => $request->end_location,
+                'date' => $request->date,
+                'departure_time' => $request->departure_time,
+                'no_of_adults' => $request->no_of_adults,
+                'no_of_children' => $request->no_of_children,
+                'amount' => $request->total_fare / count($seatNumbers), // Split fare among seats
+                'status' => 'Booked',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Update the number of tickets available for the trip
+        DB::table('trip')
+            ->where('trip_id', $request->trip_id)
+            ->increment('no_of_tickets', count($seatNumbers));
+
+        // Get the booked tickets
+        $bookedTickets = DB::table('tickets')
+            ->where('trip_id', $request->trip_id)
+            ->whereIn('seat_number', $seatNumbers)
+            ->get();
+
+        // Return the booked tickets as JSON
+        return response()->json([
+            'message' => 'Seats successfully booked',
+            'booked_tickets' => $bookedTickets,
+        ]);
     }
+
 }

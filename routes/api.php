@@ -15,3 +15,4 @@ Route::post('/support-post', [UserController::class, 'supportRequest'])->name('s
 Route::post('/search-bus', [UserController::class, 'searchBus'])->name('search.bus');
 Route::post('/book-ticket', [UserController::class, 'bookTicket'])->name('book.ticket');
 Route::post('/safety-button', [UserController::class, 'safetyButton'])->name('safety.button');
+Route::post('/check-seats', [UserController::class, 'seatAvailability'])->name('availability.seat');
