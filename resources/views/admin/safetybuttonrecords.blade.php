@@ -42,6 +42,7 @@
                                     <th class="px-4 py-2">ID Number</th>
                                     <th class="px-4 py-2">First Name</th>
                                     <th class="px-4 py-2">Last Name</th>
+                                    <th class="px-4 py-2">Issue Type</th>
                                     <th class="px-4 py-2">Latitude</th>
                                     <th class="px-4 py-2">Longitude</th>
                                 </tr>
@@ -52,6 +53,7 @@
                                         <td class="border px-4 py-2">{{ $record->id_number }}</td>
                                         <td class="border px-4 py-2">{{ $record->first_name }}</td>
                                         <td class="border px-4 py-2">{{ $record->last_name }}</td>
+                                        <td class="border px-4 py-2">{{ $record->issue_type }}</td>
                                         <td class="border px-4 py-2">{{ $record->latitude }}</td>
                                         <td class="border px-4 py-2">{{ $record->longitude }}</td>
                                     </tr>
@@ -67,6 +69,7 @@
                                     <p class="text-gray-700"><strong>ID Number:</strong> {{ $record->id_number }}</p>
                                     <p class="text-gray-700"><strong>First Name:</strong> {{ $record->first_name }}</p>
                                     <p class="text-gray-700"><strong>Last Name:</strong> {{ $record->last_name }}</p>
+                                    <p class="text-gray-700"><strong>Issue Type:</strong> {{ $record->issue_type }}</p>
                                     <p class="text-gray-700"><strong>Latitude:</strong> {{ $record->latitude }}</p>
                                     <p class="text-gray-700"><strong>Longitude:</strong> {{ $record->longitude }}</p>
                                 </div>
