@@ -634,7 +634,7 @@ class UserController extends Controller
             ->where('trip_id', $trip_id)
             ->where('passenger_id', $request->passenger_id)
             ->whereIn('seat_number', $seat_numbers) // Use whereIn to match multiple seat numbers
-            ->pluck('ticket_id'); // Retrieve all matching ticket IDs
+            ->pluck('id'); // Retrieve all matching ticket IDs
 
         // Check if any ticket IDs were found
         if ($ticket_ids->isNotEmpty()) {
@@ -643,5 +643,4 @@ class UserController extends Controller
             return response()->json(['error' => 'No tickets found for the provided seat numbers.'], 404);
         }
     }
-
 }
