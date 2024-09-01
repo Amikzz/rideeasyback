@@ -608,4 +608,40 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    //get seat reserve ticket id
+    public function getSeatReserveTicketId(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'trip_id' => 'required|string',
+            'seat_numbers' => 'required|json', // Validate seat numbers as JSON
+            'passenger_id' => 'required|string',
+        ]);
+
+        $trip_id = $request->trip_id;
+        $seat_numbers = json_decode($request->seat_numbers, true); // Decode JSON to an array
+
+        // Check if JSON decoding failed
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json([
+                'error' => 'Invalid JSON format for seat numbers.',
+            ], 400);
+        }
+
+        // Retrieve ticket IDs for the given trip and seat numbers
+        $ticket_ids = DB::table('tickets')
+            ->where('trip_id', $trip_id)
+            ->where('passenger_id', $request->passenger_id)
+            ->whereIn('seat_number', $seat_numbers) // Use whereIn to match multiple seat numbers
+            ->pluck('ticket_id'); // Retrieve all matching ticket IDs
+
+        // Check if any ticket IDs were found
+        if ($ticket_ids->isNotEmpty()) {
+            return response()->json(['ticket_ids' => $ticket_ids]); // Return the list of ticket IDs as JSON
+        } else {
+            return response()->json(['error' => 'No tickets found for the provided seat numbers.'], 404);
+        }
+    }
+
 }
