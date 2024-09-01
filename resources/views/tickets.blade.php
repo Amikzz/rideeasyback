@@ -72,6 +72,7 @@
                             <h3 class="text-lg font-semibold mb-2">Ticket Details</h3>
                             <p><strong>ID:</strong> {{ $ticket->id }}</p>
                             <p><strong>Ticket ID:</strong> {{ $ticket->ticket_id }}</p>
+                            <p><strong>Seat Number:</strong> {{ $ticket->seat_number }}</p>
                             <p><strong>Bus License Plate Number:</strong> {{ $ticket->bus_license_plate_no }}</p>
                             <p><strong>Passenger ID:</strong> {{ $ticket->passenger_id }}</p>
                             <p><strong>Start Location:</strong> {{ $ticket->start_location }}</p>
