@@ -18,3 +18,4 @@ Route::post('/safety-button', [UserController::class, 'safetyButton'])->name('sa
 Route::post('/check-seats', [UserController::class, 'seatAvailability'])->name('availability.seat');
 Route::post('/seat-booking', [UserController::class, 'seatReservation'])->name('seat.booking');
 Route::post('/get-seat-ticketID', [UserController::class, 'getSeatReserveTicketId'])->name('get.seat.ticketID');
+Route::post('/get-validated-ticket', [UserController::class, 'getNumberOfValidatedTickets'])->name('get.validated.ticket');

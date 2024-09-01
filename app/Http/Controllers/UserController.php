@@ -643,4 +643,28 @@ class UserController extends Controller
             return response()->json(['error' => 'No tickets found for the provided seat numbers.'], 404);
         }
     }
+
+    //get number of validated tickets from
+    public function getNumberOfValidatedTickets(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'bus_license_plate_no' => 'required|string',
+        ]);
+
+        // Get the current date and time
+        $currentDate = '2024-07-18';
+        $currentTime = '11:18:00';
+
+        // Query to count active tickets that are valid for the current time
+        $validatedTickets = DB::table('tickets')
+            ->where('bus_license_plate_no', $request->bus_license_plate_no)
+            ->whereDate('date', $currentDate)
+            ->where('status', 'Active')
+            ->whereTime('departure_time', '>=', $currentTime) // Assumes tickets are valid up to current time
+            ->count();
+
+        return response()->json(['validated_tickets' => $validatedTickets]);
+    }
+
 }
