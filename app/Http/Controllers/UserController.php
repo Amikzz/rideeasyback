@@ -14,9 +14,24 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Twilio\Rest\Client;
 
+/**
+ * Handles user-facing API endpoints.
+ *
+ * This controller provides functionality for users of the application,
+ * including viewing bus schedules, tracking live locations, booking tickets,
+ * submitting reviews and support requests, and using the safety button feature.
+ */
 class UserController extends Controller
 {
-    // View bus schedule
+    /**
+     * View the bus schedule with optional filters.
+     *
+     * Retrieves a list of trips based on optional filters such as date, time,
+     * start location, and end location.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function viewBusSchedule(Request $request): JsonResponse
     {
         $date = $request->input('date');
@@ -60,6 +75,12 @@ class UserController extends Controller
         return response()->json($trips);
     }
 
+    /**
+     * Update the live location of a bus.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function liveLocationTracking(Request $request): JsonResponse
     {
         $request->validate([
@@ -88,6 +109,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Get the live location of buses with a specific status.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function locationget(Request $request): JsonResponse
     {
         $request->validate([
@@ -110,6 +137,12 @@ class UserController extends Controller
         return response()->json($buses);
     }
 
+    /**
+     * Store a new review for a bus.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function reviewStore(Request $request): JsonResponse
     {
         // Validate the request data
@@ -148,6 +181,12 @@ class UserController extends Controller
         return response()->json(['status' => 'Review updated successfully']);
     }
 
+    /**
+     * Submit a new support request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function supportRequest(Request $request): JsonResponse
     {
         $request->validate(
@@ -176,8 +215,12 @@ class UserController extends Controller
         return response()->json(['status' => 'Support request submitted successfully']);
     }
 
-
-    //search bus and date and time
+    /**
+     * Search for available buses based on date and location.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searchBus(Request $request)
     {
         $request->validate([
@@ -249,7 +292,12 @@ class UserController extends Controller
     }
 
 
-    //book ticket
+    /**
+     * Book a new ticket for a trip.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bookTicket(Request $request)
     {
         // Validate input
@@ -331,61 +379,15 @@ class UserController extends Controller
         ]);
     }
 
-
-
-//    //safety button
-//    public  function safetyButton(Request $request)
-//    {
-//        $request->validate([
-//            'id_number' => 'required|string',
-//            'passenger_id' => 'required|string',
-//            'first_name' => 'required|string',
-//            'last_name' => 'required|string',
-//            'latitude' => 'required|numeric',
-//            'longitude' => 'required|numeric',
-//        ]);
-//
-//        try {
-//            $id_number = $request->id_number;
-//            $first_name = $request->first_name;
-//            $last_name = $request->last_name;
-//            $latitude = $request->latitude;
-//            $longitude = $request->longitude;
-//
-//            // add these details to ane table called safety_button
-//            DB::table('safety_button')->insert([
-//                'id_number' => $id_number,
-//                'first_name' => $first_name,
-//                'last_name' => $last_name,
-//                'latitude' => $latitude,
-//                'longitude' => $longitude,
-//                'created_at' => Carbon::now(),
-//                'updated_at' => Carbon::now(),
-//            ]);
-//
-//
-////            // Send SMS alert using Twilio
-////            $sid = env('TWILIO_SID');
-////            $token = env('TWILIO_AUTH_TOKEN');
-////            $twilioNumber = env('TWILIO_PHONE_NUMBER');
-////            $client = new Client($sid, $token);
-////
-////            $client->messages->create(
-////                '+18777804236', // Emergency contact number
-////                [
-////                    'from' => $twilioNumber,
-////                    'body' => "Emergency Alert: User $first_name $last_name with ID number $id_number has pressed the safety button. Location: Latitude $latitude, Longitude $longitude."
-////                ]
-////            );
-//
-//
-//            return response()->json(['status' => 'Safety button pressed successfully']);
-//        }catch (\Exception $e){
-//            return response()->json(['error' => $e->getMessage()], 500);
-//        }
-//    }
-
-    //safety button test
+    /**
+     * Activate the safety button feature.
+     *
+     * Records a safety alert with the user's location and sends an SMS notification
+     * if the user has a valid, active ticket for a trip currently in progress.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function safetyButton(Request $request)
     {
         $request->validate([
@@ -469,7 +471,12 @@ class UserController extends Controller
         }
     }
 
-    // Seat availability
+    /**
+     * Get the availability of seats for a trip.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function seatAvailability(Request $request)
     {
         try {
@@ -510,7 +517,12 @@ class UserController extends Controller
     }
 
 
-    // Seat reservation
+    /**
+     * Reserve seats for a trip.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function seatReservation(Request $request)
     {
         try {
@@ -609,7 +621,12 @@ class UserController extends Controller
         }
     }
 
-    //get seat reserve ticket id
+    /**
+     * Get the ticket IDs for a seat reservation.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getSeatReserveTicketId(Request $request)
     {
         // Validate input
@@ -644,7 +661,12 @@ class UserController extends Controller
         }
     }
 
-    //get number of validated tickets from
+    /**
+     * Get the number of validated tickets for a bus on the current day.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getNumberOfValidatedTickets(Request $request)
     {
         // Validate the request

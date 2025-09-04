@@ -8,12 +8,20 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
+/**
+ * Handles the logic for updating a user's profile information.
+ *
+ * This class implements the `UpdatesUserProfileInformation` contract from Fortify.
+ * It validates and updates the user's name, email, and profile photo.
+ */
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
     /**
      * Validate and update the given user's profile information.
      *
+     * @param  \App\Models\User  $user
      * @param  array<string, mixed>  $input
+     * @return void
      */
     public function update(User $user, array $input): void
     {
@@ -41,7 +49,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     /**
      * Update the given verified user's profile information.
      *
+     * This method is called when a user who must verify their email address
+     * updates their email. It nullifies the email verification date and
+     * sends a new verification notification.
+     *
+     * @param  \App\Models\User  $user
      * @param  array<string, string>  $input
+     * @return void
      */
     protected function updateVerifiedUser(User $user, array $input): void
     {
