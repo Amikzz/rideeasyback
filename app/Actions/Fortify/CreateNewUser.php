@@ -9,6 +9,13 @@ use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
 use Spatie\Permission\Models\Role;
 
+/**
+ * Handles the creation of new user accounts.
+ *
+ * This class implements the `CreatesNewUsers` contract from Fortify and is
+ * responsible for validating and creating a new user during the registration
+ * process.
+ */
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
@@ -16,7 +23,11 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      *
+     * This method validates the user's input, including name, email, and password,
+     * and then creates a new user record in the database.
+     *
      * @param  array<string, string>  $input
+     * @return \App\Models\User
      */
     public function create(array $input): User
     {

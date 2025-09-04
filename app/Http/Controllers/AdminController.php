@@ -14,8 +14,23 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Handles administrative tasks and operations.
+ *
+ * This controller is responsible for managing administrative functionalities
+ * such as adding buses, conductors, drivers, and managing schedules. It provides
+ * methods for viewing and manipulating various aspects of the system.
+ */
 class AdminController extends Controller
 {
+    /**
+     * Display the admin dashboard or redirect based on user type.
+     *
+     * Checks the authenticated user's type and displays the appropriate
+     * dashboard.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function adminDashboard()
     {
         //check the user type
@@ -27,12 +42,24 @@ class AdminController extends Controller
         }
     }
 
-    //adding a new bus
+    /**
+     * Display the form for adding a new bus.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function addBusView()
     {
         return view('admin.addBus');
     }
 
+    /**
+     * Store a newly created bus in storage.
+     *
+     * Validates the request data and creates a new bus record in the database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function addBus(Request $request)
     {
         Validator::validate($request->all(), [
@@ -60,12 +87,24 @@ class AdminController extends Controller
         }
     }
 
-    //adding a conductor
+    /**
+     * Display the form for adding a new conductor.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function addConductorView()
     {
         return view('admin.addConductor');
     }
 
+    /**
+     * Store a newly created conductor in storage.
+     *
+     * Validates the request data and creates a new conductor user record.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function addConductor(Request $request)
     {
         Validator::validate($request->all(), [
@@ -90,12 +129,24 @@ class AdminController extends Controller
         }
     }
 
-    //adding a new driver
+    /**
+     * Display the form for adding a new driver.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function addDriverView()
     {
         return view('admin.addDriver');
     }
 
+    /**
+     * Store a newly created driver in storage.
+     *
+     * Validates the request data and creates a new person and driver record.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function addDriver(Request $request)
     {
         Validator::validate($request->all(), [
@@ -136,7 +187,14 @@ class AdminController extends Controller
         }
     }
 
-    //add a new schedule
+    /**
+     * Create a new daily schedule for all routes.
+     *
+     * Iterates through all existing routes and creates a new schedule
+     * for the current day.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function addSchedule()
     {
         try {
@@ -157,7 +215,14 @@ class AdminController extends Controller
         }
     }
 
-    //view all buses
+    /**
+     * Display a list of all buses.
+     *
+     * Retrieves and displays a list of all buses. Can be filtered by license plate number.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function viewBuses(Request $request)
     {
         try{
@@ -178,7 +243,14 @@ class AdminController extends Controller
         }
     }
 
-    //inactivate bus
+    /**
+     * Inactivate a bus for maintenance.
+     *
+     * Marks a bus as 'Inactive' and adds a record to the maintenance table.
+     *
+     * @param  string  $bus_license_plate_no
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function inactivateBus($bus_license_plate_no)
     {
         try {
@@ -205,7 +277,14 @@ class AdminController extends Controller
         }
     }
 
-    //activate bus
+    /**
+     * Activate a bus after maintenance.
+     *
+     * Marks a bus as 'Active' and removes its record from the maintenance table.
+     *
+     * @param  string  $bus_license_plate_no
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function activateBus($bus_license_plate_no)
     {
         try {
@@ -224,7 +303,14 @@ class AdminController extends Controller
         }
     }
 
-    //view conductors
+    /**
+     * Display a list of all conductors.
+     *
+     * Retrieves and displays a list of all conductors. Can be filtered by conductor ID.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewConductors(Request $request)
     {
         try {
@@ -248,7 +334,12 @@ class AdminController extends Controller
         }
     }
 
-    //delete a conductor
+    /**
+     * Delete a conductor.
+     *
+     * @param  string  $conductor_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function deleteConductor($conductor_id)
     {
         try {
@@ -262,7 +353,14 @@ class AdminController extends Controller
         }
     }
 
-    //view all drivers
+    /**
+     * Display a list of all drivers.
+     *
+     * Retrieves and displays a list of all drivers. Can be filtered by driver ID.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewDrivers(Request $request)
     {
         try {
@@ -286,7 +384,12 @@ class AdminController extends Controller
         }
     }
 
-    //delete a driver
+    /**
+     * Delete a driver.
+     *
+     * @param  string  $driver_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function deleteDriver($driver_id)
     {
         try {
@@ -300,7 +403,14 @@ class AdminController extends Controller
         }
     }
 
-    //view schedules
+    /**
+     * Display a list of all schedules.
+     *
+     * Retrieves and displays a list of all schedules. Can be filtered by date.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewSchedules(Request $request)
     {
         try {
@@ -324,7 +434,13 @@ class AdminController extends Controller
         }
     }
 
-    //view support requests
+    /**
+     * Display a list of all user support requests.
+     *
+     * Retrieves and displays a list of all user support requests, ordered by status.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewSupportRequests()
     {
         try {
@@ -342,7 +458,12 @@ class AdminController extends Controller
         }
     }
 
-    //make supportbutton status as done
+    /**
+     * Mark a user support request as 'done'.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function editSupportRequests($id)
     {
         try {
@@ -356,7 +477,13 @@ class AdminController extends Controller
         }
     }
 
-    //view conductor support requests
+    /**
+     * Display a list of all conductor support requests.
+     *
+     * Retrieves and displays a list of all conductor support requests, ordered by status.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewConductorSupportRequests()
     {
         try {
@@ -374,7 +501,12 @@ class AdminController extends Controller
         }
     }
 
-    //make conductor supportbutton status as done
+    /**
+     * Mark a conductor support request as 'Done'.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function editConductorSupportRequests($id)
     {
         try {
@@ -388,7 +520,11 @@ class AdminController extends Controller
         }
     }
 
-    //view safety button records
+    /**
+     * Display a list of all safety button records.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewSafetyButtonRecords()
     {
         try {
@@ -404,7 +540,11 @@ class AdminController extends Controller
         }
     }
 
-    //view user reviews
+    /**
+     * Display a list of all user reviews.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewUserReviews()
     {
         try {

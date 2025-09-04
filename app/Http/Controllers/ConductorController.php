@@ -14,14 +14,34 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Thread;
 
+/**
+ * Handles conductor-specific operations.
+ *
+ * This controller manages functionalities available to conductors, such as
+ * registering rides, managing trips, validating tickets, and submitting
+ * support requests.
+ */
 class ConductorController extends Controller
 {
+    /**
+     * Display the form for adding a new ride.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+     */
     public function showAddRideForm(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
     {
         return view('addride');
     }
 
-    //Bus_driver_conductor registration
+    /**
+     * Register a new bus, driver, and conductor assignment for the day.
+     *
+     * Validates the input and creates a new `BusDriverConductor` record.
+     * It also assigns a series of trips for the day.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function busDriveConductorRegistration(Request $request)
     {
         $input = $request->all();
@@ -62,7 +82,15 @@ class ConductorController extends Controller
     }
 
 
-    // Method to assign trips dynamically
+    /**
+     * Assign a series of trips to a bus-driver-conductor assignment.
+     *
+     * This private method dynamically creates a set number of trips for a given
+     * `BusDriverConductor` record, scheduling them at regular intervals.
+     *
+     * @param  \App\Models\BusDriverConductor  $busDriverConductor
+     * @return void
+     */
     private function assignTrips(BusDriverConductor $busDriverConductor)
     {
         // Example logic to assign 6 trips for the day
@@ -95,6 +123,14 @@ class ConductorController extends Controller
         }
     }
 
+    /**
+     * Display a list of trips.
+     *
+     * Retrieves and displays a list of trips, which can be filtered by bus license plate number.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewTrips(Request $request)
     {
         $busLicensePlateNo = $request->input('bus_license_plate_no');
@@ -114,6 +150,15 @@ class ConductorController extends Controller
         return view('viewtrips', compact('trips', 'busLicensePlateNo'));
     }
 
+    /**
+     * Start a trip.
+     *
+     * Updates the status of a trip to 'In Progress'.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $trip_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function startTrip(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
     {
         try {
@@ -129,6 +174,15 @@ class ConductorController extends Controller
         }
     }
 
+    /**
+     * End a trip.
+     *
+     * Updates the status of a trip to 'Done'.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $trip_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function endTrip(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
     {
         try {
@@ -145,6 +199,13 @@ class ConductorController extends Controller
     }
 
 
+    /**
+     * Display the form for deleting a ride.
+     *
+     * Fetches and displays a list of today's trips for selection.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+     */
     public function showDeleteRideForm(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
     {
         // Get today's date
@@ -163,20 +224,15 @@ class ConductorController extends Controller
         return view('deleteride', compact('departureTimes'));
     }
 
-//    public function deleteRide(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
-//    {
-//        try {
-//
-//            DB::table('trip')->where('trip_id', $trip_id)->delete();
-//
-//            return redirect()->route('viewtrips')->with('success', 'Ride deleted successfully');
-//        }
-//        catch (\Exception $e) {
-//            Log::error('Error deleting ride: ' . $e->getMessage());
-//            return redirect()->route('viewtrips')->with('error', 'Failed to delete the ride.');
-//        }
-//    }
-
+    /**
+     * Delete a ride.
+     *
+     * Deletes a trip if it is not within one hour of its departure time.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $trip_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function deleteRide(Request $request, $trip_id): \Illuminate\Http\RedirectResponse
     {
         try {
@@ -206,11 +262,23 @@ class ConductorController extends Controller
         }
     }
 
-
+    /**
+     * Display the support form for conductors.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+     */
     public function showSupportForm(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application{
         return view('supportforconductors');
     }
 
+    /**
+     * Handle the submission of a conductor support request.
+     *
+     * Validates the input and creates a new conductor support request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function conductorSupportController(Request $request): \Illuminate\Http\RedirectResponse
     {
         try {
@@ -238,13 +306,25 @@ class ConductorController extends Controller
         }
     }
 
-    //show validate ticket page
+    /**
+     * Display the ticket validation page.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+     */
     public function showValidateTicketPage(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
     {
         return view('tickets');
     }
 
-    // Validate ticket
+    /**
+     * Validate a ticket.
+     *
+     * Checks if a ticket is valid and marks it as 'Active'.
+     * It also increments the count of validated tickets for the corresponding trip.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function validateTicket(Request $request)
     {
         // Validate input
